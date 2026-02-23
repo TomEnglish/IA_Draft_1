@@ -125,7 +125,7 @@ export default function LocationsScreen() {
               label="Capacity (optional)"
               value={capacity}
               onChangeText={setCapacity}
-              keyboardType="numeric"
+
               placeholder="Max items"
             />
 

@@ -100,11 +100,11 @@ export default function MaterialDetailScreen() {
     setShipping(true);
     try {
       if (!isOnline) {
-        await addToQueue({ type: 'shipment', payload: { materialId: material.id, destination, quantity: qty, carrier: carrier || undefined, trackingNumber: trackingNumber || undefined } });
+        await addToQueue({ type: 'shipment', payload: { materialId: material.id, destination, quantity: qty, carrier: carrier || undefined, trackingNumber: trackingNumber || undefined, shippedBy: user?.id } });
         setShowShipOut(false);
         Alert.alert('Queued', 'Shipment will sync when back online');
       } else {
-        await createShipment(material.id, destination, qty, carrier || undefined, trackingNumber || undefined);
+        await createShipment(material.id, destination, qty, carrier || undefined, trackingNumber || undefined, user?.id);
         setShowShipOut(false);
         loadMaterial();
         loadShipments();
@@ -194,7 +194,7 @@ export default function MaterialDetailScreen() {
       <View style={styles.header}>
         <Text style={styles.title}>{material.material_type}</Text>
         <View style={styles.statusBadge}>
-          <Text style={styles.statusText}>{material.status.replace('_', ' ').toUpperCase()}</Text>
+          <Text style={styles.statusText}>{material.status.replaceAll('_', ' ').toUpperCase()}</Text>
         </View>
       </View>
 
@@ -311,7 +311,7 @@ export default function MaterialDetailScreen() {
               label="Quantity to Issue"
               value={issueQty}
               onChangeText={setIssueQty}
-              keyboardType="numeric"
+
               placeholder={`Max: ${material.current_quantity}`}
             />
 
@@ -357,7 +357,7 @@ export default function MaterialDetailScreen() {
               label="Quantity to Ship"
               value={shipQty}
               onChangeText={setShipQty}
-              keyboardType="numeric"
+
               placeholder={`Max: ${material.current_quantity}`}
             />
 

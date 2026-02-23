@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   Alert,
   Modal,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -29,8 +30,11 @@ const STATUS_FILTERS = [
 export default function MaterialsScreen() {
   const [materials, setMaterials] = useState<MaterialWithLocation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const offsetRef = useRef(0);
 
   // Edit modal state
   const [editItem, setEditItem] = useState<MaterialWithLocation | null>(null);
@@ -43,16 +47,36 @@ export default function MaterialsScreen() {
 
   const load = async () => {
     setLoading(true);
+    offsetRef.current = 0;
     try {
-      const data = await fetchMaterials({
+      const result = await fetchMaterials({
         status: statusFilter || undefined,
         search: search || undefined,
+        offset: 0,
       });
-      setMaterials(data);
+      setMaterials(result.data);
+      setHasMore(result.hasMore);
+      offsetRef.current = result.data.length;
     } catch (e: any) {
       Alert.alert('Error', e.message);
     }
     setLoading(false);
+  };
+
+  const loadMore = async () => {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    try {
+      const result = await fetchMaterials({
+        status: statusFilter || undefined,
+        search: search || undefined,
+        offset: offsetRef.current,
+      });
+      setMaterials((prev) => [...prev, ...result.data]);
+      setHasMore(result.hasMore);
+      offsetRef.current += result.data.length;
+    } catch {}
+    setLoadingMore(false);
   };
 
   useFocusEffect(
@@ -110,7 +134,7 @@ export default function MaterialsScreen() {
         <Text style={styles.cardTitle}>{item.material_type}</Text>
         <View style={[styles.statusBadge, { backgroundColor: statusColor(item.status) + '20' }]}>
           <Text style={[styles.statusText, { color: statusColor(item.status) }]}>
-            {item.status.replace('_', ' ').toUpperCase()}
+            {item.status.replaceAll('_', ' ').toUpperCase()}
           </Text>
         </View>
       </View>
@@ -160,6 +184,9 @@ export default function MaterialsScreen() {
         renderItem={renderItem}
         contentContainerStyle={styles.list}
         refreshControl={<RefreshControl refreshing={loading} onRefresh={load} />}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.3}
+        ListFooterComponent={loadingMore ? <ActivityIndicator style={{ padding: 12 }} /> : null}
         ListEmptyComponent={
           <View style={styles.empty}>
             <FontAwesome name="cubes" size={48} color="#CBD5E1" />
@@ -177,7 +204,7 @@ export default function MaterialsScreen() {
             <Input label="Size" value={editSize} onChangeText={setEditSize} />
             <Input label="Grade" value={editGrade} onChangeText={setEditGrade} />
             <Input label="Spec" value={editSpec} onChangeText={setEditSpec} />
-            <Input label="Weight" value={editWeight} onChangeText={setEditWeight} keyboardType="numeric" />
+            <Input label="Weight" value={editWeight} onChangeText={setEditWeight} />
             <Button title="Save" onPress={handleSave} loading={saving} />
             <Button title="Cancel" variant="secondary" onPress={() => setEditItem(null)} style={{ marginTop: 8 }} />
           </View>

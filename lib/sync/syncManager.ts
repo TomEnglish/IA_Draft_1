@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-import { getQueue, removeFromQueue, type QueueItem } from './offlineQueue';
+import { getQueue, removeFromQueue, markFailed, type QueueItem } from './offlineQueue';
 import { lookupOrCreateQRCode, submitReceivingRecord } from '../api/receiving';
 import { transferMaterial, issueMaterial } from '../api/materials';
 import { createShipment } from '../api/shipments';
@@ -17,14 +17,17 @@ export async function processQueue(): Promise<{ processed: number; failed: numbe
   try {
     const queue = await getQueue();
     for (const item of queue) {
+      // Skip dead-lettered items
+      if (item.deadLetter) continue;
+
       try {
         await processItem(item);
         await removeFromQueue(item.id);
         processed++;
-      } catch {
+      } catch (e: any) {
+        await markFailed(item.id, e?.message ?? 'Unknown error');
         failed++;
-        // Leave failed items in queue for next retry
-        break; // Stop processing — items may depend on order
+        // Continue processing remaining items instead of stopping
       }
     }
   } finally {
@@ -69,7 +72,7 @@ async function processItem(item: QueueItem): Promise<void> {
     }
     case 'shipment': {
       const s = action.payload;
-      await createShipment(s.materialId, s.destination, s.quantity, s.carrier, s.trackingNumber);
+      await createShipment(s.materialId, s.destination, s.quantity, s.carrier, s.trackingNumber, s.shippedBy);
       break;
     }
   }

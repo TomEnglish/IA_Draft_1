@@ -74,7 +74,7 @@ export function MaterialStep({ onNext }: Props) {
         label="Quantity"
         value={qty}
         onChangeText={setQty}
-        keyboardType="numeric"
+
         error={errors.qty}
       />
       <Input label="Size" value={size} onChangeText={setSize} placeholder="e.g. 4&quot;" />
@@ -83,7 +83,7 @@ export function MaterialStep({ onNext }: Props) {
         label="Weight"
         value={weight}
         onChangeText={setWeight}
-        keyboardType="numeric"
+
         placeholder="lbs"
       />
       <Input label="Description" value={description} onChangeText={setDescription} />

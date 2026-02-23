@@ -1,10 +1,22 @@
+import { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Tabs } from 'expo-router';
+import { Tabs, router } from 'expo-router';
 import { SignOutButton } from '@/components/ui/SignOutButton';
 import { OfflineIndicator } from '@/components/ui/OfflineIndicator';
+import { useAuthStore } from '@/stores/authStore';
 
 export default function FieldLayout() {
+  const user = useAuthStore((s) => s.user);
+
+  useEffect(() => {
+    if (!user) {
+      router.replace('/');
+    } else if (user.role === 'office_staff') {
+      router.replace('/(office)/dashboard');
+    }
+  }, [user]);
+
   return (
     <View style={styles.container}>
       <OfflineIndicator />

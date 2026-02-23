@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   RefreshControl,
   Alert,
   Modal,
+  ActivityIndicator,
 } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -25,6 +26,9 @@ import {
 export default function QRCodesScreen() {
   const [qrCodes, setQRCodes] = useState<QRCodeRecord[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const offsetRef = useRef(0);
   const [showGenerate, setShowGenerate] = useState(false);
   const [batchCount, setBatchCount] = useState('10');
   const [generating, setGenerating] = useState(false);
@@ -36,13 +40,28 @@ export default function QRCodesScreen() {
 
   const load = async () => {
     setLoading(true);
+    offsetRef.current = 0;
     try {
-      const data = await fetchQRCodes();
-      setQRCodes(data);
+      const result = await fetchQRCodes({ offset: 0 });
+      setQRCodes(result.data);
+      setHasMore(result.hasMore);
+      offsetRef.current = result.data.length;
     } catch (e: any) {
       Alert.alert('Error', e.message);
     }
     setLoading(false);
+  };
+
+  const loadMore = async () => {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    try {
+      const result = await fetchQRCodes({ offset: offsetRef.current });
+      setQRCodes((prev) => [...prev, ...result.data]);
+      setHasMore(result.hasMore);
+      offsetRef.current += result.data.length;
+    } catch {}
+    setLoadingMore(false);
   };
 
   useFocusEffect(
@@ -163,7 +182,7 @@ export default function QRCodesScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>
-          {qrCodes.length} total / {unlinked.length} available
+          Showing {qrCodes.length} / {unlinked.length} available
         </Text>
         <View style={styles.headerActions}>
           <Button
@@ -187,6 +206,9 @@ export default function QRCodesScreen() {
         renderItem={renderItem}
         contentContainerStyle={styles.list}
         refreshControl={<RefreshControl refreshing={loading} onRefresh={load} />}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.3}
+        ListFooterComponent={loadingMore ? <ActivityIndicator style={{ padding: 12 }} /> : null}
         ListEmptyComponent={
           <View style={styles.empty}>
             <FontAwesome name="qrcode" size={48} color="#CBD5E1" />
@@ -204,7 +226,7 @@ export default function QRCodesScreen() {
               label="How many?"
               value={batchCount}
               onChangeText={setBatchCount}
-              keyboardType="numeric"
+
               placeholder="1-100"
             />
             <Button title="Generate" onPress={handleGenerate} loading={generating} />

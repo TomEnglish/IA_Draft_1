@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   RefreshControl,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -27,31 +28,54 @@ const STATUS_FILTERS = [
 export default function InventoryScreen() {
   const [materials, setMaterials] = useState<MaterialWithLocation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const offsetRef = useRef(0);
 
   const isOnline = useNetworkStore((s) => s.isOnline);
 
   const load = async () => {
     setLoading(true);
+    offsetRef.current = 0;
     const cacheKey = `materials_${statusFilter}_${search}`;
     try {
-      const data = await fetchMaterials({
+      const result = await fetchMaterials({
         status: statusFilter || undefined,
         search: search || undefined,
+        offset: 0,
       });
-      setMaterials(data);
-      await setCache(cacheKey, data);
+      setMaterials(result.data);
+      setHasMore(result.hasMore);
+      offsetRef.current = result.data.length;
+      await setCache(cacheKey, result.data);
     } catch (e: any) {
-      // If offline, try cache
       const cached = await getCached<MaterialWithLocation[]>(cacheKey);
       if (cached) {
         setMaterials(cached);
+        setHasMore(false);
       } else {
         Alert.alert('Error', e.message);
       }
     }
     setLoading(false);
+  };
+
+  const loadMore = async () => {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    try {
+      const result = await fetchMaterials({
+        status: statusFilter || undefined,
+        search: search || undefined,
+        offset: offsetRef.current,
+      });
+      setMaterials((prev) => [...prev, ...result.data]);
+      setHasMore(result.hasMore);
+      offsetRef.current += result.data.length;
+    } catch {}
+    setLoadingMore(false);
   };
 
   useFocusEffect(
@@ -80,7 +104,7 @@ export default function InventoryScreen() {
         <Text style={styles.cardTitle}>{item.material_type}</Text>
         <View style={[styles.statusBadge, { backgroundColor: statusColor(item.status) + '20' }]}>
           <Text style={[styles.statusText, { color: statusColor(item.status) }]}>
-            {item.status.replace('_', ' ').toUpperCase()}
+            {item.status.replaceAll('_', ' ').toUpperCase()}
           </Text>
         </View>
       </View>
@@ -136,6 +160,9 @@ export default function InventoryScreen() {
         renderItem={renderItem}
         contentContainerStyle={styles.list}
         refreshControl={<RefreshControl refreshing={loading} onRefresh={load} />}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.3}
+        ListFooterComponent={loadingMore ? <ActivityIndicator style={{ padding: 12 }} /> : null}
         ListEmptyComponent={
           <View style={styles.empty}>
             <FontAwesome name="cubes" size={48} color="#CBD5E1" />

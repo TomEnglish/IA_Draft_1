@@ -16,14 +16,26 @@ function generateCode(): string {
   return `QR-${hex.toUpperCase()}`;
 }
 
-export async function fetchQRCodes(): Promise<QRCodeRecord[]> {
+const QR_PAGE_SIZE = 20;
+
+export async function fetchQRCodes(options?: {
+  offset?: number;
+  limit?: number;
+}): Promise<{ data: QRCodeRecord[]; hasMore: boolean }> {
+  const limit = options?.limit ?? QR_PAGE_SIZE;
+  const offset = options?.offset ?? 0;
+
   const { data, error } = await supabase
     .from('qr_codes')
     .select('*')
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .range(offset, offset + limit); // inclusive, fetches limit+1 rows to detect hasMore
 
   if (error) throw new Error(error.message);
-  return (data ?? []) as QRCodeRecord[];
+
+  const results = (data ?? []) as QRCodeRecord[];
+  const hasMore = results.length > limit;
+  return { data: hasMore ? results.slice(0, limit) : results, hasMore };
 }
 
 export async function batchCreateQRCodes(count: number): Promise<QRCodeRecord[]> {

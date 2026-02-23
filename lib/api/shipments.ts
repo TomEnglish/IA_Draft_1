@@ -15,33 +15,17 @@ export async function createShipment(
   destination: string,
   quantityShipped: number,
   carrier?: string,
-  trackingNumber?: string
+  trackingNumber?: string,
+  shippedBy?: string
 ) {
-  // Get current material
-  const { data: material, error: fetchError } = await supabase
-    .from('materials')
-    .select('current_quantity')
-    .eq('id', materialId)
-    .single();
+  // Atomically deduct quantity (prevents race conditions)
+  const { error: rpcError } = await supabase.rpc('deduct_material_quantity', {
+    p_material_id: materialId,
+    p_quantity: quantityShipped,
+    p_depleted_status: 'shipped',
+  });
 
-  if (fetchError) throw new Error(fetchError.message);
-
-  const newQty = material.current_quantity - quantityShipped;
-  if (newQty < 0) throw new Error('Cannot ship more than available quantity');
-
-  // Determine new status
-  const newStatus = newQty === 0 ? 'shipped' : 'in_yard';
-
-  // Update material
-  const { error: updateError } = await supabase
-    .from('materials')
-    .update({
-      current_quantity: newQty,
-      status: newStatus,
-    })
-    .eq('id', materialId);
-
-  if (updateError) throw new Error(updateError.message);
+  if (rpcError) throw new Error(rpcError.message);
 
   // Create shipment record
   const { error: shipError } = await supabase
@@ -56,7 +40,7 @@ export async function createShipment(
 
   if (shipError) throw new Error(shipError.message);
 
-  logAction(materialId, 'shipment_created', 'material', materialId, {
+  logAction(shippedBy ?? 'unknown', 'shipment_created', 'material', materialId, {
     destination,
     quantity: quantityShipped,
     carrier,

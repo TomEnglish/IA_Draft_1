@@ -143,7 +143,7 @@ export default function ReportsScreen() {
               {inventory.map((row, i) => (
                 <View key={i} style={styles.tableRow}>
                   <Text style={[styles.tableCell, styles.cellWide]}>{row.material_type}</Text>
-                  <Text style={styles.tableCell}>{row.status.replace('_', ' ')}</Text>
+                  <Text style={styles.tableCell}>{row.status.replaceAll('_', ' ')}</Text>
                   <Text style={styles.tableCell}>{row.item_count}</Text>
                   <Text style={styles.tableCell}>{row.total_quantity}</Text>
                 </View>

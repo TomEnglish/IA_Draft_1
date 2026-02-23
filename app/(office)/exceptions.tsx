@@ -78,7 +78,7 @@ export default function ExceptionsScreen() {
           <View style={styles.cardHeaderLeft}>
             <View style={[styles.badge, item.exception_resolved && styles.badgeResolved]}>
               <Text style={styles.badgeText}>
-                {item.exception_resolved ? 'RESOLVED' : item.exception_type?.toUpperCase().replace('_', ' ') ?? 'EXCEPTION'}
+                {item.exception_resolved ? 'RESOLVED' : item.exception_type?.toUpperCase().replaceAll('_', ' ') ?? 'EXCEPTION'}
               </Text>
             </View>
             <Text style={styles.cardTitle}>{item.material_type}</Text>

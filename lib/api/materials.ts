@@ -20,11 +20,18 @@ export interface MaterialWithLocation {
   location_rack: string | null;
 }
 
+const PAGE_SIZE = 20;
+
 export async function fetchMaterials(filters?: {
   status?: string;
   material_type?: string;
   search?: string;
-}) {
+  offset?: number;
+  limit?: number;
+}): Promise<{ data: MaterialWithLocation[]; hasMore: boolean }> {
+  const limit = filters?.limit ?? PAGE_SIZE;
+  const offset = filters?.offset ?? 0;
+
   let query = supabase
     .from('materials')
     .select(`
@@ -32,7 +39,8 @@ export async function fetchMaterials(filters?: {
       qr_codes ( code_value ),
       locations ( zone, row, rack )
     `)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .range(offset, offset + limit); // inclusive, fetches limit+1 rows to detect hasMore
 
   if (filters?.status) {
     query = query.eq('status', filters.status);
@@ -40,11 +48,14 @@ export async function fetchMaterials(filters?: {
   if (filters?.material_type) {
     query = query.eq('material_type', filters.material_type);
   }
+  if (filters?.search) {
+    query = query.or(`material_type.ilike.%${filters.search}%,grade.ilike.%${filters.search}%`);
+  }
 
   const { data, error } = await query;
   if (error) throw new Error(error.message);
 
-  let results = (data ?? []).map((m: any) => ({
+  const results = (data ?? []).map((m: any) => ({
     id: m.id,
     material_type: m.material_type,
     size: m.size,
@@ -63,17 +74,8 @@ export async function fetchMaterials(filters?: {
     location_rack: m.locations?.rack ?? null,
   })) as MaterialWithLocation[];
 
-  if (filters?.search) {
-    const s = filters.search.toLowerCase();
-    results = results.filter(
-      (m) =>
-        m.material_type.toLowerCase().includes(s) ||
-        m.qr_code_value?.toLowerCase().includes(s) ||
-        m.grade?.toLowerCase().includes(s)
-    );
-  }
-
-  return results;
+  const hasMore = results.length > limit;
+  return { data: hasMore ? results.slice(0, limit) : results, hasMore };
 }
 
 export async function fetchMaterialById(id: string) {
@@ -152,28 +154,14 @@ export async function issueMaterial(
   issuedBy: string,
   workOrder?: string
 ) {
-  // Get current material
-  const { data: material, error: fetchError } = await supabase
-    .from('materials')
-    .select('current_quantity')
-    .eq('id', materialId)
-    .single();
+  // Atomically deduct quantity (prevents race conditions)
+  const { error: rpcError } = await supabase.rpc('deduct_material_quantity', {
+    p_material_id: materialId,
+    p_quantity: quantityIssued,
+    p_depleted_status: 'depleted',
+  });
 
-  if (fetchError) throw new Error(fetchError.message);
-
-  const newQty = material.current_quantity - quantityIssued;
-  if (newQty < 0) throw new Error('Cannot issue more than available quantity');
-
-  // Update quantity and status
-  const { error: updateError } = await supabase
-    .from('materials')
-    .update({
-      current_quantity: newQty,
-      status: newQty === 0 ? 'depleted' : 'in_yard',
-    })
-    .eq('id', materialId);
-
-  if (updateError) throw new Error(updateError.message);
+  if (rpcError) throw new Error(rpcError.message);
 
   // Record the issue
   const { error: issueError } = await supabase
