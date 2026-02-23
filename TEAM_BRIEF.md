@@ -127,6 +127,10 @@ Type the email and password, then tap **Sign In**.
 
 ### Receiving Wizard (Both Roles)
 
+**Scan** — Scan a QR code or enter one manually to start receiving:
+
+![Receiving Wizard — Scan](docs/images/Scan.PNG)
+
 **Step 1: Material Details** — Select material type, quantity, size, grade, weight:
 
 ![Receiving Wizard — Material Details](docs/images/19-MaterialDetails.PNG)
