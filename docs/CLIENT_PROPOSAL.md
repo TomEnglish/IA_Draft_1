@@ -25,7 +25,7 @@ Works on any iPhone or Android — no special hardware required. Just scan a QR 
 
 Field workers scan a QR label on arriving material to kick off receiving. Manual entry is available as a fallback.
 
-![Scan a QR code to begin](docs/images/Scan.PNG)
+![Scan a QR code to begin](images/Scan.PNG)
 
 ### Guided Receiving Wizard
 
@@ -33,41 +33,41 @@ A step-by-step form walks the user through the full receiving process — no tra
 
 **Material Details** — Type, quantity, size, grade, and weight:
 
-![Material Details](docs/images/19-MaterialDetails.PNG)
+![Material Details](images/19-MaterialDetails.PNG)
 
 **PO / Delivery** — Link to a purchase order, vendor, and delivery info:
 
-![PO / Delivery](docs/images/18-PODelivery.PNG)
+![PO / Delivery](images/18-PODelivery.PNG)
 
 **Photo Documentation** — Capture photos of the delivery, materials, and any damage on the spot:
 
-![Photo Capture](docs/images/20-Photos.PNG)
+![Photo Capture](images/20-Photos.PNG)
 
 **Inspection** — Record condition, flag discrepancies, and note damage:
 
-![Inspection](docs/images/21-Inspection.PNG)
+![Inspection](images/21-Inspection.PNG)
 
 **Storage Location** — Assign the material to a yard zone, row, and rack:
 
-![Location Assignment](docs/images/22-Location.PNG)
+![Location Assignment](images/22-Location.PNG)
 
 ### Office Dashboard
 
 Managers get a real-time overview without leaving their desk — KPIs, inventory breakdown by type, and yard status at a glance.
 
-![Dashboard](docs/images/07-office-dashboard.png)
+![Dashboard](images/07-office-dashboard.png)
 
 ### Exception Management
 
 When a field worker flags a problem (wrong count, wrong type, damage), it goes straight to the exceptions queue. Office staff review the details and resolve with Hold or Return to Vendor.
 
-![Exceptions Queue](docs/images/09-office-exceptions.png)
+![Exceptions Queue](images/09-office-exceptions.png)
 
 ### Reports and Export
 
 Inventory and aging reports with one-tap CSV export for accounting, audits, or vendor negotiations.
 
-![Reports](docs/images/13-office-reports.png)
+![Reports](images/13-office-reports.png)
 
 ---
 
