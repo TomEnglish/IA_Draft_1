@@ -129,7 +129,25 @@ Type the email and password, then tap **Sign In**.
 
 **Step 1: Material Details** — Select material type, quantity, size, grade, weight:
 
-![Receiving Wizard — Material Details](docs/images/14-receiving-wizard.png)
+![Receiving Wizard — Material Details](docs/images/19-MaterialDetails.PNG)
+
+**Step 2: PO / Delivery** — Enter PO number, vendor, and delivery details:
+
+![Receiving Wizard — PO / Delivery](docs/images/18-PODelivery.PNG)
+
+**Step 3: Photos** — Capture inspection photos (general, damage, delivery ticket):
+
+![Receiving Wizard — Photos](docs/images/20-Photos.PNG)
+
+**Step 4: Inspection** — Check condition, note damage or quantity discrepancies:
+
+![Receiving Wizard — Inspection](docs/images/21-Inspection.PNG)
+
+**Step 5: Decision** — Accept, Partial Accept, or Reject the material.
+
+**Step 6: Location** — Assign a storage location in the yard:
+
+![Receiving Wizard — Location](docs/images/22-Location.PNG)
 
 ---
 
