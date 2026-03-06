@@ -1,21 +1,26 @@
 import { supabase } from '@/lib/supabase';
 import { compressPhoto } from '@/lib/utils/compressPhoto';
-import { logAction } from './auditLog';
-import type { PhotoEntry } from '@/stores/receivingStore';
 import type {
-  MaterialStepData,
-  POStepData,
+  DecisionStepData,
   InspectionStepData,
   LocationStepData,
-  DecisionStepData,
+  MaterialStepData,
+  POStepData,
 } from '@/lib/utils/validation';
+import { useAuthStore } from '@/stores/authStore';
+import type { PhotoEntry } from '@/stores/receivingStore';
+import { logAction } from './auditLog';
 
 // Look up an existing QR code or create a new one
 export async function lookupOrCreateQRCode(codeValue: string) {
+  const projectId = useAuthStore.getState().activeProject?.id;
+  if (!projectId) throw new Error('No active project');
+
   // Check if QR code exists
   const { data: existing } = await supabase
     .from('qr_codes')
     .select('*')
+    .eq('project_id', projectId)
     .eq('code_value', codeValue)
     .single();
 
@@ -26,7 +31,7 @@ export async function lookupOrCreateQRCode(codeValue: string) {
   // Create new QR code
   const { data: created, error } = await supabase
     .from('qr_codes')
-    .insert({ code_value: codeValue, entity_type: 'item' })
+    .insert({ project_id: projectId, code_value: codeValue, entity_type: 'item' })
     .select()
     .single();
 
@@ -50,7 +55,6 @@ async function uploadPhoto(photo: PhotoEntry, receivingRecordId: string) {
   return fileName;
 }
 
-// Submit the full receiving record
 export async function submitReceivingRecord({
   qrCodeId,
   material,
@@ -70,10 +74,14 @@ export async function submitReceivingRecord({
   decision: DecisionStepData;
   userId: string;
 }) {
+  const projectId = useAuthStore.getState().activeProject?.id;
+  if (!projectId) throw new Error('No active project');
+
   // Insert receiving record
   const { data: record, error: recordError } = await supabase
     .from('receiving_records')
     .insert({
+      project_id: projectId,
       qr_code_id: qrCodeId,
       status: decision.status,
       material_type: material.material_type,
@@ -121,11 +129,13 @@ export async function submitReceivingRecord({
   await supabase
     .from('qr_codes')
     .update({ entity_id: record.id })
+    .eq('project_id', projectId)
     .eq('id', qrCodeId);
 
   // Auto-create material record if accepted
   if (decision.status === 'accepted' || decision.status === 'partially_accepted') {
     await supabase.from('materials').insert({
+      project_id: projectId,
       receiving_record_id: record.id,
       qr_code_id: qrCodeId,
       material_type: material.material_type,

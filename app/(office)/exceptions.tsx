@@ -1,15 +1,3 @@
-import { useState, useCallback } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-  RefreshControl,
-  Alert,
-} from 'react-native';
-import { useFocusEffect } from 'expo-router';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Button } from '@/components/ui/Button';
 import {
   fetchExceptions,
@@ -17,6 +5,18 @@ import {
   type ExceptionRecord,
 } from '@/lib/api/exceptions';
 import { useAuthStore } from '@/stores/authStore';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
+import {
+  Alert,
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 export default function ExceptionsScreen() {
   const user = useAuthStore((s) => s.user);
@@ -39,7 +39,7 @@ export default function ExceptionsScreen() {
   useFocusEffect(
     useCallback(() => {
       load();
-    }, [showResolved])
+    }, [showResolved, user?.activeProject?.id])
   );
 
   const handleResolve = (id: string, resolution: 'hold' | 'return_to_vendor') => {

@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { useAuthStore } from '@/stores/authStore';
 
 export interface QRCodeRecord {
   id: string;
@@ -22,12 +23,16 @@ export async function fetchQRCodes(options?: {
   offset?: number;
   limit?: number;
 }): Promise<{ data: QRCodeRecord[]; hasMore: boolean }> {
+  const projectId = useAuthStore.getState().activeProject?.id;
+  if (!projectId) return { data: [], hasMore: false };
+
   const limit = options?.limit ?? QR_PAGE_SIZE;
   const offset = options?.offset ?? 0;
 
   const { data, error } = await supabase
     .from('qr_codes')
     .select('*')
+    .eq('project_id', projectId)
     .order('created_at', { ascending: false })
     .range(offset, offset + limit); // inclusive, fetches limit+1 rows to detect hasMore
 
@@ -39,7 +44,11 @@ export async function fetchQRCodes(options?: {
 }
 
 export async function batchCreateQRCodes(count: number): Promise<QRCodeRecord[]> {
+  const projectId = useAuthStore.getState().activeProject?.id;
+  if (!projectId) throw new Error('No active project');
+
   const rows = Array.from({ length: count }, () => ({
+    project_id: projectId,
     code_value: generateCode(),
     entity_type: 'item',
   }));
@@ -55,10 +64,14 @@ export async function batchCreateQRCodes(count: number): Promise<QRCodeRecord[]>
 
 // Look up a QR code by its value and return linked material ID if any
 export async function lookupMaterialByQR(codeValue: string): Promise<{ materialId: string } | null> {
+  const projectId = useAuthStore.getState().activeProject?.id;
+  if (!projectId) return null;
+
   // Find the QR code record
   const { data: qr } = await supabase
     .from('qr_codes')
     .select('id')
+    .eq('project_id', projectId)
     .eq('code_value', codeValue)
     .single();
 
@@ -68,6 +81,7 @@ export async function lookupMaterialByQR(codeValue: string): Promise<{ materialI
   const { data: mat } = await supabase
     .from('materials')
     .select('id')
+    .eq('project_id', projectId)
     .eq('qr_code_id', qr.id)
     .single();
 
@@ -76,9 +90,13 @@ export async function lookupMaterialByQR(codeValue: string): Promise<{ materialI
 }
 
 export async function fetchQRCodeDetail(id: string) {
+  const projectId = useAuthStore.getState().activeProject?.id;
+  if (!projectId) throw new Error('No active project');
+
   const { data: qr, error } = await supabase
     .from('qr_codes')
     .select('*')
+    .eq('project_id', projectId)
     .eq('id', id)
     .single();
 
@@ -90,6 +108,7 @@ export async function fetchQRCodeDetail(id: string) {
     const { data: mat } = await supabase
       .from('materials')
       .select('*, locations(*)')
+      .eq('project_id', projectId)
       .eq('id', qr.entity_id)
       .single();
     material = mat;

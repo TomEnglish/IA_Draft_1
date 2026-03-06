@@ -1,9 +1,9 @@
-import { useState, useCallback, useRef } from 'react';
-import { View, Text, FlatList, StyleSheet, RefreshControl, Alert, TouchableOpacity } from 'react-native';
-import { useFocusEffect } from 'expo-router';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useAuthStore } from '@/stores/authStore';
 import { fetchRecentActivity, type ActivityItem } from '@/lib/api/activity';
+import { useAuthStore } from '@/stores/authStore';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useRef, useState } from 'react';
+import { Alert, FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const ICONS: Record<string, { name: any; color: string; bg: string }> = {
   receiving: { name: 'download', color: '#2563EB', bg: '#EFF6FF' },
@@ -54,14 +54,14 @@ export function ActivityScreenContent({ filterByCurrentUser }: ActivityScreenPro
       setItems((prev) => [...prev, ...result.data]);
       setHasMore(result.hasMore);
       offsetRef.current += result.data.length;
-    } catch {}
+    } catch { }
     setLoadingMore(false);
   };
 
   useFocusEffect(
     useCallback(() => {
       load();
-    }, [user?.id, filterByCurrentUser])
+    }, [user?.id, filterByCurrentUser, user?.activeProject?.id])
   );
 
   const formatTime = (dateStr: string) => {

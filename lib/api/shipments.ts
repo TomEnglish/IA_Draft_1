@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { useAuthStore } from '@/stores/authStore';
 import { logAction } from './auditLog';
 
 export interface ShipmentRecord {
@@ -18,6 +19,9 @@ export async function createShipment(
   trackingNumber?: string,
   shippedBy?: string
 ) {
+  const projectId = useAuthStore.getState().activeProject?.id;
+  if (!projectId) throw new Error('No active project');
+
   // Atomically deduct quantity (prevents race conditions)
   const { error: rpcError } = await supabase.rpc('deduct_material_quantity', {
     p_material_id: materialId,
@@ -31,6 +35,7 @@ export async function createShipment(
   const { error: shipError } = await supabase
     .from('shipments_out')
     .insert({
+      project_id: projectId,
       material_id: materialId,
       destination,
       carrier: carrier || null,
@@ -48,9 +53,13 @@ export async function createShipment(
 }
 
 export async function fetchShipmentHistory(materialId: string): Promise<ShipmentRecord[]> {
+  const projectId = useAuthStore.getState().activeProject?.id;
+  if (!projectId) return [];
+
   const { data, error } = await supabase
     .from('shipments_out')
     .select('*')
+    .eq('project_id', projectId)
     .eq('material_id', materialId)
     .order('created_at', { ascending: false });
 

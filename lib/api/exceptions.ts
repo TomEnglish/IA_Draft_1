@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { useAuthStore } from '@/stores/authStore';
 import { logAction } from './auditLog';
 
 export interface ExceptionRecord {
@@ -21,6 +22,9 @@ export interface ExceptionRecord {
 }
 
 export async function fetchExceptions(showResolved = false) {
+  const projectId = useAuthStore.getState().activeProject?.id;
+  if (!projectId) return [];
+
   let query = supabase
     .from('receiving_records')
     .select(`
@@ -39,6 +43,7 @@ export async function fetchExceptions(showResolved = false) {
       users!receiving_records_created_by_fkey ( full_name ),
       locations ( zone, row, rack )
     `)
+    .eq('project_id', projectId)
     .eq('has_exception', true)
     .order('created_at', { ascending: false });
 
@@ -75,12 +80,16 @@ export async function resolveException(
   resolution: 'hold' | 'return_to_vendor',
   userId?: string
 ) {
+  const projectId = useAuthStore.getState().activeProject?.id;
+  if (!projectId) throw new Error('No active project');
+
   const { error } = await supabase
     .from('receiving_records')
     .update({
       exception_resolved: true,
       exception_resolution: resolution,
     })
+    .eq('project_id', projectId)
     .eq('id', id);
 
   if (error) throw new Error(error.message);

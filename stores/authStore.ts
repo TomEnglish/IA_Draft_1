@@ -1,11 +1,14 @@
-import { create } from 'zustand';
 import { supabase } from '@/lib/supabase';
-import type { User, UserRole } from '@/types/database';
+import type { Project, User } from '@/types/database';
+import { create } from 'zustand';
 
 interface AuthState {
   user: User | null;
   session: { access_token: string } | null;
   loading: boolean;
+  activeProject: Project | null;
+  availableProjects: Project[];
+  setActiveProject: (projectId: string) => void;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   loadSession: () => Promise<void>;
@@ -15,6 +18,14 @@ export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   session: null,
   loading: true,
+  activeProject: null,
+  availableProjects: [],
+
+  setActiveProject: (projectId: string) => {
+    set((state) => ({
+      activeProject: state.availableProjects.find((p) => p.id === projectId) || state.activeProject,
+    }));
+  },
 
   signIn: async (email: string, password: string) => {
     let data, error;
@@ -44,9 +55,25 @@ export const useAuthStore = create<AuthState>((set) => ({
       return { error: 'Failed to load user profile' };
     }
 
+    const { data: upData } = await supabase
+      .from('user_projects')
+      .select('projects(*)')
+      .eq('user_id', data.user.id);
+
+    let availableProjects: Project[] = [];
+    if (upData) {
+      availableProjects = upData
+        .map((up: any) => up.projects as Project)
+        .filter(Boolean);
+    }
+
+    const activeProject = availableProjects.length > 0 ? availableProjects[0] : null;
+
     set({
       session: { access_token: data.session.access_token },
       user: profile as User,
+      availableProjects,
+      activeProject,
     });
 
     return { error: null };
@@ -54,7 +81,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   signOut: async () => {
     await supabase.auth.signOut();
-    set({ user: null, session: null });
+    set({ user: null, session: null, activeProject: null, availableProjects: [] });
   },
 
   loadSession: async () => {
@@ -70,16 +97,32 @@ export const useAuthStore = create<AuthState>((set) => ({
           .eq('id', session.user.id)
           .single();
 
+        const { data: upData } = await supabase
+          .from('user_projects')
+          .select('projects(*)')
+          .eq('user_id', session.user.id);
+
+        let availableProjects: Project[] = [];
+        if (upData) {
+          availableProjects = upData
+            .map((up: any) => up.projects as Project)
+            .filter(Boolean);
+        }
+
+        const activeProject = availableProjects.length > 0 ? availableProjects[0] : null;
+
         set({
           session: { access_token: session.access_token },
           user: profile as User | null,
+          availableProjects,
+          activeProject,
           loading: false,
         });
       } else {
-        set({ user: null, session: null, loading: false });
+        set({ user: null, session: null, activeProject: null, availableProjects: [], loading: false });
       }
     } catch {
-      set({ user: null, session: null, loading: false });
+      set({ user: null, session: null, activeProject: null, availableProjects: [], loading: false });
     }
   },
 }));

@@ -1,29 +1,31 @@
-import { useState, useCallback, useRef } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  RefreshControl,
-  Alert,
-  Modal,
-  ActivityIndicator,
-} from 'react-native';
-import { useFocusEffect } from 'expo-router';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import * as Print from 'expo-print';
-import QRCode from 'qrcode';
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
 import { Card } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
 import {
-  fetchQRCodes,
   batchCreateQRCodes,
   fetchQRCodeDetail,
+  fetchQRCodes,
   type QRCodeRecord,
 } from '@/lib/api/qrcodes';
+import { useAuthStore } from '@/stores/authStore';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import * as Print from 'expo-print';
+import { useFocusEffect } from 'expo-router';
+import QRCode from 'qrcode';
+import { useCallback, useRef, useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Modal,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 export default function QRCodesScreen() {
+  const activeProject = useAuthStore((s) => s.activeProject);
   const [qrCodes, setQRCodes] = useState<QRCodeRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -60,14 +62,14 @@ export default function QRCodesScreen() {
       setQRCodes((prev) => [...prev, ...result.data]);
       setHasMore(result.hasMore);
       offsetRef.current += result.data.length;
-    } catch {}
+    } catch { }
     setLoadingMore(false);
   };
 
   useFocusEffect(
     useCallback(() => {
       load();
-    }, [])
+    }, [activeProject?.id])
   );
 
   const handleGenerate = async () => {

@@ -19,12 +19,13 @@ const EXCEPTION_TYPES: { value: ExceptionType; label: string }[] = [
 ];
 
 interface Props {
-  onSubmit: () => void;
+  onNext?: () => void;
+  onSubmit?: () => void;
   onBack: () => void;
-  submitting: boolean;
+  submitting?: boolean;
 }
 
-export function DecisionStep({ onSubmit, onBack, submitting }: Props) {
+export function DecisionStep({ onNext, onSubmit, onBack, submitting }: Props) {
   const { decision, setDecision, inspection } = useReceivingStore();
 
   const [status, setStatus] = useState<DecisionStatus>(decision.status);
@@ -36,14 +37,15 @@ export function DecisionStep({ onSubmit, onBack, submitting }: Props) {
   // Auto-flag exception if condition is damaged or inspection failed
   const autoException = inspection.condition === 'damaged' || !inspection.inspection_pass;
 
-  const handleSubmit = () => {
+  const handleNext = () => {
     const flagException = hasException || autoException;
     setDecision({
       status,
       has_exception: flagException,
       exception_type: flagException ? exceptionType : undefined,
     });
-    onSubmit();
+    if (onNext) onNext();
+    else if (onSubmit) onSubmit();
   };
 
   return (
@@ -110,8 +112,8 @@ export function DecisionStep({ onSubmit, onBack, submitting }: Props) {
       )}
 
       <Button
-        title={submitting ? 'Submitting...' : 'Submit'}
-        onPress={handleSubmit}
+        title={submitting ? 'Submitting...' : 'Next'}
+        onPress={handleNext}
         loading={submitting}
         style={{ marginTop: 16 }}
       />

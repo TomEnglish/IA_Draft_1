@@ -1,10 +1,11 @@
-import { useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { OfflineIndicator } from '@/components/ui/OfflineIndicator';
+import { ProjectSelector } from '@/components/ui/ProjectSelector';
+import { SignOutButton } from '@/components/ui/SignOutButton';
+import { useAuthStore } from '@/stores/authStore';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs, router } from 'expo-router';
-import { SignOutButton } from '@/components/ui/SignOutButton';
-import { OfflineIndicator } from '@/components/ui/OfflineIndicator';
-import { useAuthStore } from '@/stores/authStore';
+import { useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 export default function OfficeLayout() {
   const user = useAuthStore((s) => s.user);
@@ -26,7 +27,12 @@ export default function OfficeLayout() {
           tabBarInactiveTintColor: '#94A3B8',
           headerStyle: { backgroundColor: '#fff' },
           headerTitleStyle: { fontWeight: '600' },
-          headerRight: () => <SignOutButton />,
+          headerRight: () => (
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <ProjectSelector />
+              <SignOutButton />
+            </View>
+          ),
         }}
       >
         <Tabs.Screen

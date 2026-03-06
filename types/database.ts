@@ -14,6 +14,20 @@ export type MaterialStatus = 'in_yard' | 'issued' | 'shipped' | 'depleted';
 
 export type PhotoType = 'damage' | 'general' | 'delivery_ticket';
 
+export interface Project {
+  id: string;
+  name: string;
+  description: string | null;
+  status: 'active' | 'completed' | 'archived';
+  created_at: string;
+}
+
+export interface UserProject {
+  user_id: string;
+  project_id: string;
+  created_at: string;
+}
+
 export interface User {
   id: string;
   email: string;
@@ -24,6 +38,7 @@ export interface User {
 
 export interface Location {
   id: string;
+  project_id: string;
   zone: string;
   row: string;
   rack: string;
@@ -34,6 +49,7 @@ export interface Location {
 
 export interface QRCode {
   id: string;
+  project_id: string;
   code_value: string;
   entity_type: EntityType;
   entity_id: string | null;
@@ -42,6 +58,7 @@ export interface QRCode {
 
 export interface ReceivingRecord {
   id: string;
+  project_id: string;
   qr_code_id: string;
   status: ReceivingStatus;
   material_type: string;
@@ -77,6 +94,7 @@ export interface InspectionPhoto {
 
 export interface Material {
   id: string;
+  project_id: string;
   receiving_record_id: string;
   qr_code_id: string;
   material_type: string;
@@ -93,6 +111,7 @@ export interface Material {
 
 export interface MaterialMovement {
   id: string;
+  project_id: string;
   material_id: string;
   from_location_id: string | null;
   to_location_id: string;
@@ -103,6 +122,7 @@ export interface MaterialMovement {
 
 export interface MaterialIssue {
   id: string;
+  project_id: string;
   material_id: string;
   job_number: string;
   work_order: string | null;
@@ -113,6 +133,7 @@ export interface MaterialIssue {
 
 export interface ShipmentOut {
   id: string;
+  project_id: string;
   material_id: string;
   destination: string;
   carrier: string | null;

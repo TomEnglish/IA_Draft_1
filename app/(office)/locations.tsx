@@ -1,21 +1,23 @@
-import { useState, useCallback } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  RefreshControl,
-  Alert,
-  Modal,
-} from 'react-native';
-import { useFocusEffect } from 'expo-router';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { supabase } from '@/lib/supabase';
+import { useAuthStore } from '@/stores/authStore';
 import type { Location } from '@/types/database';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
+import {
+  Alert,
+  FlatList,
+  Modal,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 export default function LocationsScreen() {
+  const activeProject = useAuthStore((s) => s.activeProject);
   const [locations, setLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
@@ -48,7 +50,7 @@ export default function LocationsScreen() {
   useFocusEffect(
     useCallback(() => {
       load();
-    }, [])
+    }, [activeProject?.id])
   );
 
   const handleAdd = async () => {

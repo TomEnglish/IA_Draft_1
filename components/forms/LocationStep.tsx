@@ -6,11 +6,13 @@ import { supabase } from '@/lib/supabase';
 import type { Location } from '@/types/database';
 
 interface Props {
-  onNext: () => void;
+  onNext?: () => void;
+  onSubmit?: () => void;
   onBack: () => void;
+  submitting?: boolean;
 }
 
-export function LocationStep({ onNext, onBack }: Props) {
+export function LocationStep({ onNext, onSubmit, onBack, submitting }: Props) {
   const { location, setLocation } = useReceivingStore();
   const [locations, setLocations] = useState<Location[]>([]);
   const [selected, setSelected] = useState(location.location_id);
@@ -43,7 +45,8 @@ export function LocationStep({ onNext, onBack }: Props) {
       return;
     }
     setLocation({ location_id: selected });
-    onNext();
+    if (onNext) onNext();
+    else if (onSubmit) onSubmit();
   };
 
   if (loading) {
@@ -82,7 +85,7 @@ export function LocationStep({ onNext, onBack }: Props) {
         ))
       )}
 
-      <Button title="Next" onPress={handleNext} style={{ marginTop: 16 }} />
+      <Button title={submitting ? 'Submitting...' : (onSubmit ? 'Submit' : 'Next')} onPress={handleNext} loading={submitting} style={{ marginTop: 16 }} />
       <Button title="Back" variant="secondary" onPress={onBack} style={{ marginTop: 8 }} />
     </ScrollView>
   );

@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { useAuthStore } from '@/stores/authStore';
 
 export interface KPIData {
   totalMaterials: number;
@@ -27,10 +28,14 @@ export interface YardLocation {
 }
 
 export async function fetchKPIs(): Promise<KPIData> {
+  const projectId = useAuthStore.getState().activeProject?.id;
+  if (!projectId) return { totalMaterials: 0, totalInYard: 0, totalQuantityInYard: 0, openExceptions: 0, agingOver30: 0, agingOver90: 0 };
+
   // Total materials and in-yard count
   const { data: inventory } = await supabase
     .from('v_inventory_summary')
-    .select('*');
+    .select('*')
+    .eq('project_id', projectId);
 
   let totalMaterials = 0;
   let totalInYard = 0;
@@ -48,13 +53,15 @@ export async function fetchKPIs(): Promise<KPIData> {
   const { count: openExceptions } = await supabase
     .from('receiving_records')
     .select('id', { count: 'exact', head: true })
+    .eq('project_id', projectId)
     .eq('has_exception', true)
     .eq('exception_resolved', false);
 
   // Aging items
   const { data: aging } = await supabase
     .from('v_aging_report')
-    .select('days_in_yard');
+    .select('days_in_yard')
+    .eq('project_id', projectId);
 
   let agingOver30 = 0;
   let agingOver90 = 0;
@@ -74,9 +81,13 @@ export async function fetchKPIs(): Promise<KPIData> {
 }
 
 export async function fetchInventoryByType(): Promise<InventoryByType[]> {
+  const projectId = useAuthStore.getState().activeProject?.id;
+  if (!projectId) return [];
+
   const { data, error } = await supabase
     .from('v_inventory_summary')
     .select('*')
+    .eq('project_id', projectId)
     .eq('status', 'in_yard')
     .order('item_count', { ascending: false });
 
@@ -90,9 +101,13 @@ export async function fetchInventoryByType(): Promise<InventoryByType[]> {
 }
 
 export async function fetchYardOverview(): Promise<YardLocation[]> {
+  const projectId = useAuthStore.getState().activeProject?.id;
+  if (!projectId) return [];
+
   const { data, error } = await supabase
     .from('v_yard_overview')
     .select('*')
+    .eq('project_id', projectId)
     .order('zone')
     .order('row')
     .order('rack');

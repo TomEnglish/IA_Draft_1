@@ -1,18 +1,20 @@
-import { useState, useCallback } from 'react';
-import { View, Text, ScrollView, StyleSheet, RefreshControl, Alert } from 'react-native';
-import { useFocusEffect } from 'expo-router';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Card } from '@/components/ui/Card';
 import {
-  fetchKPIs,
   fetchInventoryByType,
+  fetchKPIs,
   fetchYardOverview,
-  type KPIData,
   type InventoryByType,
+  type KPIData,
   type YardLocation,
 } from '@/lib/api/dashboard';
+import { useAuthStore } from '@/stores/authStore';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { Alert, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function DashboardScreen() {
+  const activeProject = useAuthStore((s) => s.activeProject);
   const [kpis, setKPIs] = useState<KPIData | null>(null);
   const [byType, setByType] = useState<InventoryByType[]>([]);
   const [yardOverview, setYardOverview] = useState<YardLocation[]>([]);
@@ -38,7 +40,7 @@ export default function DashboardScreen() {
   useFocusEffect(
     useCallback(() => {
       load();
-    }, [])
+    }, [activeProject?.id])
   );
 
   const maxTypeCount = Math.max(...byType.map((t) => t.item_count), 1);

@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { useAuthStore } from '@/stores/authStore';
 import { logAction } from './auditLog';
 
 export interface MaterialWithLocation {
@@ -32,6 +33,9 @@ export async function fetchMaterials(filters?: {
   const limit = filters?.limit ?? PAGE_SIZE;
   const offset = filters?.offset ?? 0;
 
+  const projectId = useAuthStore.getState().activeProject?.id;
+  if (!projectId) return { data: [], hasMore: false };
+
   let query = supabase
     .from('materials')
     .select(`
@@ -39,6 +43,7 @@ export async function fetchMaterials(filters?: {
       qr_codes ( code_value ),
       locations ( zone, row, rack )
     `)
+    .eq('project_id', projectId)
     .order('created_at', { ascending: false })
     .range(offset, offset + limit); // inclusive, fetches limit+1 rows to detect hasMore
 
@@ -79,6 +84,9 @@ export async function fetchMaterials(filters?: {
 }
 
 export async function fetchMaterialById(id: string) {
+  const projectId = useAuthStore.getState().activeProject?.id;
+  if (!projectId) throw new Error('No active project');
+
   const { data, error } = await supabase
     .from('materials')
     .select(`
@@ -86,6 +94,7 @@ export async function fetchMaterialById(id: string) {
       qr_codes ( code_value ),
       locations ( zone, row, rack )
     `)
+    .eq('project_id', projectId)
     .eq('id', id)
     .single();
 
@@ -119,10 +128,14 @@ export async function transferMaterial(
   movedBy: string,
   reason?: string
 ) {
+  const projectId = useAuthStore.getState().activeProject?.id;
+  if (!projectId) throw new Error('No active project');
+
   // Update material location
   const { error: updateError } = await supabase
     .from('materials')
     .update({ location_id: toLocationId })
+    .eq('project_id', projectId)
     .eq('id', materialId);
 
   if (updateError) throw new Error(updateError.message);
@@ -131,6 +144,7 @@ export async function transferMaterial(
   const { error: moveError } = await supabase
     .from('material_movements')
     .insert({
+      project_id: projectId,
       material_id: materialId,
       from_location_id: fromLocationId,
       to_location_id: toLocationId,
@@ -154,6 +168,9 @@ export async function issueMaterial(
   issuedBy: string,
   workOrder?: string
 ) {
+  const projectId = useAuthStore.getState().activeProject?.id;
+  if (!projectId) throw new Error('No active project');
+
   // Atomically deduct quantity (prevents race conditions)
   const { error: rpcError } = await supabase.rpc('deduct_material_quantity', {
     p_material_id: materialId,
@@ -167,6 +184,7 @@ export async function issueMaterial(
   const { error: issueError } = await supabase
     .from('material_issues')
     .insert({
+      project_id: projectId,
       material_id: materialId,
       job_number: jobNumber,
       work_order: workOrder || null,

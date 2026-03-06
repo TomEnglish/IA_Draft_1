@@ -1,23 +1,24 @@
-import { useState, useCallback, useRef } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-  RefreshControl,
-  Alert,
-  Modal,
-  ScrollView,
-  ActivityIndicator,
-} from 'react-native';
-import { useFocusEffect } from 'expo-router';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { fetchMaterials, type MaterialWithLocation } from '@/lib/api/materials';
 import { supabase } from '@/lib/supabase';
+import { useAuthStore } from '@/stores/authStore';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useRef, useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Modal,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 const STATUS_FILTERS = [
   { value: '', label: 'All' },
@@ -28,6 +29,7 @@ const STATUS_FILTERS = [
 ];
 
 export default function MaterialsScreen() {
+  const activeProject = useAuthStore((s) => s.activeProject);
   const [materials, setMaterials] = useState<MaterialWithLocation[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -75,14 +77,14 @@ export default function MaterialsScreen() {
       setMaterials((prev) => [...prev, ...result.data]);
       setHasMore(result.hasMore);
       offsetRef.current += result.data.length;
-    } catch {}
+    } catch { }
     setLoadingMore(false);
   };
 
   useFocusEffect(
     useCallback(() => {
       load();
-    }, [statusFilter, search])
+    }, [statusFilter, search, activeProject?.id])
   );
 
   const openEdit = (item: MaterialWithLocation) => {
