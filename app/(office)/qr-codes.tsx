@@ -1,6 +1,7 @@
+import { GenerateQRModal } from '@/components/modals/GenerateQRModal';
+import { QRDetailModal } from '@/components/modals/QRDetailModal';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
 import {
   batchCreateQRCodes,
   fetchQRCodeDetail,
@@ -17,11 +18,10 @@ import {
   ActivityIndicator,
   Alert,
   FlatList,
-  Modal,
   RefreshControl,
   StyleSheet,
   Text,
-  View,
+  View
 } from 'react-native';
 
 export default function QRCodesScreen() {
@@ -219,78 +219,25 @@ export default function QRCodesScreen() {
         }
       />
 
-      {/* Generate Modal */}
-      <Modal visible={showGenerate} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Generate QR Codes</Text>
-            <Input
-              label="How many?"
-              value={batchCount}
-              onChangeText={setBatchCount}
+      <GenerateQRModal
+        visible={showGenerate}
+        batchCount={batchCount}
+        setBatchCount={setBatchCount}
+        generating={generating}
+        onGenerate={handleGenerate}
+        onCancel={() => setShowGenerate(false)}
+      />
 
-              placeholder="1-100"
-            />
-            <Button title="Generate" onPress={handleGenerate} loading={generating} />
-            <Button
-              title="Cancel"
-              variant="secondary"
-              onPress={() => setShowGenerate(false)}
-              style={{ marginTop: 8 }}
-            />
-          </View>
-        </View>
-      </Modal>
-
-      {/* Detail Modal */}
-      <Modal visible={!!detailQR} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>QR Code Detail</Text>
-            {detailQR && (
-              <>
-                <DetailRow label="Code" value={detailQR.code_value} />
-                <DetailRow label="Status" value={detailQR.entity_id ? 'Linked' : 'Available'} />
-                <DetailRow label="Created" value={new Date(detailQR.created_at).toLocaleDateString()} />
-                {detailMaterial && (
-                  <>
-                    <Text style={styles.sectionLabel}>Linked Material</Text>
-                    <DetailRow label="Type" value={detailMaterial.material_type} />
-                    <DetailRow label="Status" value={detailMaterial.status} />
-                    <DetailRow label="Qty" value={`${detailMaterial.current_quantity} / ${detailMaterial.qty}`} />
-                  </>
-                )}
-                <Button
-                  title="Print This Label"
-                  variant="secondary"
-                  onPress={() => {
-                    handlePrintLabels([detailQR]);
-                  }}
-                  style={{ marginTop: 12 }}
-                />
-              </>
-            )}
-            <Button
-              title="Close"
-              variant="secondary"
-              onPress={() => {
-                setDetailQR(null);
-                setDetailMaterial(null);
-              }}
-              style={{ marginTop: 8 }}
-            />
-          </View>
-        </View>
-      </Modal>
-    </View>
-  );
-}
-
-function DetailRow({ label, value }: { label: string; value: string }) {
-  return (
-    <View style={styles.detailRow}>
-      <Text style={styles.detailLabel}>{label}</Text>
-      <Text style={styles.detailValue}>{value}</Text>
+      <QRDetailModal
+        visible={!!detailQR}
+        code={detailQR}
+        material={detailMaterial}
+        onPrint={handlePrintLabels}
+        onClose={() => {
+          setDetailQR(null);
+          setDetailMaterial(null);
+        }}
+      />
     </View>
   );
 }
@@ -322,28 +269,4 @@ const styles = StyleSheet.create({
   statusLabel: { fontSize: 11, color: '#94A3B8', marginTop: 2 },
   empty: { alignItems: 'center', paddingTop: 60 },
   emptyText: { fontSize: 15, color: '#94A3B8', marginTop: 12 },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    padding: 20,
-  },
-  modalContent: { backgroundColor: '#fff', borderRadius: 12, padding: 20 },
-  modalTitle: { fontSize: 18, fontWeight: '600', color: '#1E293B', marginBottom: 16 },
-  sectionLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1E293B',
-    marginTop: 12,
-    marginBottom: 4,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-  },
-  detailLabel: { fontSize: 13, color: '#64748B' },
-  detailValue: { fontSize: 13, color: '#1E293B', fontWeight: '500' },
 });

@@ -1,7 +1,7 @@
+import { EditMaterialModal } from '@/components/modals/EditMaterialModal';
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
 import { fetchMaterials, type MaterialWithLocation } from '@/lib/api/materials';
-import { supabase } from '@/lib/supabase';
+import { getProjectClient } from '@/lib/supabaseProject';
 import { useAuthStore } from '@/stores/authStore';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useFocusEffect } from 'expo-router';
@@ -10,14 +10,13 @@ import {
   ActivityIndicator,
   Alert,
   FlatList,
-  Modal,
   RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 
 const STATUS_FILTERS = [
@@ -100,7 +99,7 @@ export default function MaterialsScreen() {
     if (!editItem) return;
     setSaving(true);
     try {
-      const { error } = await supabase
+      const { error } = await getProjectClient()
         .from('materials')
         .update({
           material_type: editType,
@@ -197,21 +196,22 @@ export default function MaterialsScreen() {
         }
       />
 
-      {/* Edit Modal */}
-      <Modal visible={!!editItem} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Edit Material</Text>
-            <Input label="Material Type" value={editType} onChangeText={setEditType} />
-            <Input label="Size" value={editSize} onChangeText={setEditSize} />
-            <Input label="Grade" value={editGrade} onChangeText={setEditGrade} />
-            <Input label="Spec" value={editSpec} onChangeText={setEditSpec} />
-            <Input label="Weight" value={editWeight} onChangeText={setEditWeight} />
-            <Button title="Save" onPress={handleSave} loading={saving} />
-            <Button title="Cancel" variant="secondary" onPress={() => setEditItem(null)} style={{ marginTop: 8 }} />
-          </View>
-        </View>
-      </Modal>
+      <EditMaterialModal
+        editItem={editItem}
+        editType={editType}
+        setEditType={setEditType}
+        editSize={editSize}
+        setEditSize={setEditSize}
+        editGrade={editGrade}
+        setEditGrade={setEditGrade}
+        editSpec={editSpec}
+        setEditSpec={setEditSpec}
+        editWeight={editWeight}
+        setEditWeight={setEditWeight}
+        saving={saving}
+        onSave={handleSave}
+        onCancel={() => setEditItem(null)}
+      />
     </View>
   );
 }
@@ -269,16 +269,4 @@ const styles = StyleSheet.create({
   editHint: { fontSize: 11, color: '#CBD5E1', marginTop: 4, fontStyle: 'italic' },
   empty: { alignItems: 'center', paddingTop: 60 },
   emptyText: { fontSize: 15, color: '#94A3B8', marginTop: 12 },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    padding: 20,
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 20,
-  },
-  modalTitle: { fontSize: 18, fontWeight: '600', color: '#1E293B', marginBottom: 16 },
 });

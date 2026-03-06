@@ -1,5 +1,4 @@
-import { supabase } from '@/lib/supabase';
-import { useAuthStore } from '@/stores/authStore';
+import { getProjectClient } from '@/lib/supabaseProject';
 import { logAction } from './auditLog';
 
 export interface ExceptionRecord {
@@ -22,11 +21,9 @@ export interface ExceptionRecord {
 }
 
 export async function fetchExceptions(showResolved = false) {
-  const projectId = useAuthStore.getState().activeProject?.id;
-  if (!projectId) return [];
+  const client = getProjectClient();
 
-  let query = supabase
-    .from('receiving_records')
+  let query = client.from('receiving_records')
     .select(`
       id,
       material_type,
@@ -43,7 +40,7 @@ export async function fetchExceptions(showResolved = false) {
       users!receiving_records_created_by_fkey ( full_name ),
       locations ( zone, row, rack )
     `)
-    .eq('project_id', projectId)
+    // No need for `.eq('project_id', ...)` anymore!
     .eq('has_exception', true)
     .order('created_at', { ascending: false });
 
@@ -80,16 +77,14 @@ export async function resolveException(
   resolution: 'hold' | 'return_to_vendor',
   userId?: string
 ) {
-  const projectId = useAuthStore.getState().activeProject?.id;
-  if (!projectId) throw new Error('No active project');
+  const client = getProjectClient();
 
-  const { error } = await supabase
-    .from('receiving_records')
+  // Will automatically apply `eq('project_id', projectId)`
+  const { error } = await client.from('receiving_records')
     .update({
       exception_resolved: true,
       exception_resolution: resolution,
     })
-    .eq('project_id', projectId)
     .eq('id', id);
 
   if (error) throw new Error(error.message);

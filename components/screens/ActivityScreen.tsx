@@ -19,6 +19,7 @@ interface ActivityScreenProps {
 
 export function ActivityScreenContent({ filterByCurrentUser }: ActivityScreenProps) {
   const user = useAuthStore((s) => s.user);
+  const activeProject = useAuthStore((s) => s.activeProject);
   const [items, setItems] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -61,7 +62,7 @@ export function ActivityScreenContent({ filterByCurrentUser }: ActivityScreenPro
   useFocusEffect(
     useCallback(() => {
       load();
-    }, [user?.id, filterByCurrentUser, user?.activeProject?.id])
+    }, [user?.id, filterByCurrentUser, activeProject?.id])
   );
 
   const formatTime = (dateStr: string) => {

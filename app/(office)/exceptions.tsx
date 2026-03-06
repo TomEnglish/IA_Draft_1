@@ -20,6 +20,7 @@ import {
 
 export default function ExceptionsScreen() {
   const user = useAuthStore((s) => s.user);
+  const activeProject = useAuthStore((s) => s.activeProject);
   const [exceptions, setExceptions] = useState<ExceptionRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [showResolved, setShowResolved] = useState(false);
@@ -39,7 +40,7 @@ export default function ExceptionsScreen() {
   useFocusEffect(
     useCallback(() => {
       load();
-    }, [showResolved, user?.activeProject?.id])
+    }, [showResolved, activeProject?.id])
   );
 
   const handleResolve = (id: string, resolution: 'hold' | 'return_to_vendor') => {

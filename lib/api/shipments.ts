@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import { useAuthStore } from '@/stores/authStore';
+import { getProjectClient } from '@/lib/supabaseProject';
 import { logAction } from './auditLog';
 
 export interface ShipmentRecord {
@@ -19,10 +19,9 @@ export async function createShipment(
   trackingNumber?: string,
   shippedBy?: string
 ) {
-  const projectId = useAuthStore.getState().activeProject?.id;
-  if (!projectId) throw new Error('No active project');
+  const projectId = getProjectClient().projectId;
 
-  // Atomically deduct quantity (prevents race conditions)
+  // Atomically deduct quantity (RPCS require manual supabase injection)
   const { error: rpcError } = await supabase.rpc('deduct_material_quantity', {
     p_material_id: materialId,
     p_quantity: quantityShipped,
@@ -32,10 +31,10 @@ export async function createShipment(
   if (rpcError) throw new Error(rpcError.message);
 
   // Create shipment record
-  const { error: shipError } = await supabase
+  const client = getProjectClient();
+  const { error: shipError } = await client
     .from('shipments_out')
     .insert({
-      project_id: projectId,
       material_id: materialId,
       destination,
       carrier: carrier || null,
@@ -53,13 +52,11 @@ export async function createShipment(
 }
 
 export async function fetchShipmentHistory(materialId: string): Promise<ShipmentRecord[]> {
-  const projectId = useAuthStore.getState().activeProject?.id;
-  if (!projectId) return [];
+  const client = getProjectClient();
 
-  const { data, error } = await supabase
+  const { data, error } = await client
     .from('shipments_out')
     .select('*')
-    .eq('project_id', projectId)
     .eq('material_id', materialId)
     .order('created_at', { ascending: false });
 
