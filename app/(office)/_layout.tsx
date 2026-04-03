@@ -108,6 +108,15 @@ export default function OfficeLayout() {
           }}
         />
         <Tabs.Screen
+          name="admin"
+          options={{
+            title: 'Admin',
+            tabBarIcon: ({ color }) => (
+              <FontAwesome name="database" size={24} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
           name="receiving"
           options={{
             href: null,
