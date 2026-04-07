@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Asset Scanner — Industrial Material Lifecycle Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --border: #e2e8f0;
+    --border-light: #f1f5f9;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --text-light: #94a3b8;
+    --primary: #0369a1;
+    --primary-light: #e0f2fe;
+    --accent: #0891b2;
+    --accent-light: #cffafe;
+    --success: #059669;
+    --success-light: #d1fae5;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --purple: #7c3aed;
+    --purple-light: #ede9fe;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ── Navigation ── */
+  nav {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.92);
+  }
+  nav .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--primary);
+    text-decoration: none;
+  }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 18px;
+  }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+  .nav-links a:hover { color: var(--primary); }
+
+  /* ── Hero ── */
+  .hero {
+    background: linear-gradient(135deg, #0369a1, #0891b2);
+    border-radius: 20px;
+    padding: 56px 48px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    margin-top: 32px;
+  }
+  .hero::before, .hero::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+  }
+  .hero::before { width: 300px; height: 300px; top: -100px; right: -60px; }
+  .hero::after { width: 200px; height: 200px; bottom: -80px; left: -40px; background: rgba(255,255,255,0.05); }
+  .hero h1 {
+    font-size: 40px;
+    font-weight: 900;
+    line-height: 1.15;
+    max-width: 650px;
+    position: relative;
+  }
+  .hero p {
+    font-size: 17px;
+    opacity: 0.88;
+    margin-top: 16px;
+    max-width: 560px;
+    line-height: 1.7;
+    position: relative;
+  }
+  .hero-badges {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+  }
+
+  /* ── Section headings ── */
+  .section { margin-top: 56px; }
+  .section-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--accent);
+  }
+  .section-title {
+    font-size: 28px;
+    font-weight: 800;
+    margin-top: 6px;
+    color: var(--text);
+  }
+  .section-subtitle {
+    color: var(--text-muted);
+    font-size: 15px;
+    margin-top: 8px;
+    max-width: 600px;
+  }
+
+  /* ── Video embed ── */
+  .video-wrapper {
+    margin-top: 24px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: #000;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+  }
+  .video-wrapper iframe {
+    width: 100%;
+    aspect-ratio: 16/9;
+    display: block;
+    border: none;
+  }
+
+  /* ── Feature cards ── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 28px;
+  }
+  .feature-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 24px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+  }
+  .feature-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.07);
+  }
+  .feature-icon {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+  .feature-card h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .feature-card p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ── Screenshot gallery ── */
+  .screenshots-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 28px;
+  }
+  .screenshot-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .screenshot-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.07);
+  }
+  .screenshot-card img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    object-position: top;
+    display: block;
+  }
+  .screenshot-card .caption {
+    padding: 12px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  /* ── Metrics bar ── */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-top: 28px;
+  }
+  .metric-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    text-align: center;
+  }
+  .metric-value {
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--primary);
+  }
+  .metric-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  /* ── Workflow steps ── */
+  .workflow {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-top: 28px;
+  }
+  .workflow-step {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 14px;
+    text-align: center;
+    position: relative;
+  }
+  .workflow-step .step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  .workflow-step h4 {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .workflow-step p {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* ── Tech stack pills ── */
+  .tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .tech-pill {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tech-pill .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+
+  /* ── CTA ── */
+  .cta {
+    background: linear-gradient(135deg, #0369a1, #0891b2);
+    border-radius: 20px;
+    padding: 48px;
+    color: white;
+    text-align: center;
+    margin-top: 56px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta::before {
+    content: '';
+    position: absolute;
+    width: 250px; height: 250px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+    top: -80px; right: -40px;
+  }
+  .cta h2 {
+    font-size: 28px;
+    font-weight: 800;
+    position: relative;
+  }
+  .cta p {
+    opacity: 0.88;
+    margin-top: 12px;
+    font-size: 15px;
+    position: relative;
+  }
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 15px;
+    padding: 14px 32px;
+    border-radius: 12px;
+    text-decoration: none;
+    margin-top: 24px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+  }
+  .cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 40px 24px;
+    color: var(--text-light);
+    font-size: 13px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .screenshots-grid { grid-template-columns: repeat(2, 1fr); }
+    .metrics { grid-template-columns: repeat(2, 1fr); }
+    .workflow { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .hero { padding: 36px 24px; }
+    .hero h1 { font-size: 28px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .screenshots-grid { grid-template-columns: 1fr; }
+    .metrics { grid-template-columns: 1fr; }
+    .workflow { grid-template-columns: repeat(2, 1fr); }
+    .nav-links { display: none; }
+  }
+
+  /* ── Animations ── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  }
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <div class="container">
+    <a class="logo" href="#">
+      <div class="logo-icon">&#9634;</div>
+      InvenioTek
+    </a>
+    <div class="nav-links">
+      <a href="#demo">Demo</a>
+      <a href="#features">Features</a>
+      <a href="#workflow">Workflow</a>
+      <a href="#screens">Screens</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero fade-up">
+    <h1>QR Asset Scanner</h1>
+    <p>Complete material lifecycle management for industrial laydown yards. Receive, inspect, store, transfer, and ship — all from a mobile device with offline support.</p>
+    <div class="hero-badges">
+      <span class="badge">&#128241; iOS &amp; Android</span>
+      <span class="badge">&#128246; QR Code Scanning</span>
+      <span class="badge">&#9729;&#65039; Offline-First</span>
+      <span class="badge">&#128274; Role-Based Access</span>
+    </div>
+  </div>
+
+  <!-- Key Metrics -->
+  <div class="metrics fade-up">
+    <div class="metric-card">
+      <div class="metric-value">6-Step</div>
+      <div class="metric-label">Receiving Wizard</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">19</div>
+      <div class="metric-label">Database Tables</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">100%</div>
+      <div class="metric-label">Offline Capable</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">Full</div>
+      <div class="metric-label">Audit Trail</div>
+    </div>
+  </div>
+
+  <!-- Video Demo -->
+  <div id="demo" class="section fade-up">
+    <span class="section-label">Live Demo</span>
+    <h2 class="section-title">See It in Action</h2>
+    <p class="section-subtitle">A walkthrough of the complete material receiving workflow — from QR scan to inventory.</p>
+    <div class="video-wrapper">
+      <iframe src="https://share.descript.com/embed/bqJuKnwx8Yh" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <!-- Material Lifecycle -->
+  <div id="workflow" class="section fade-up">
+    <span class="section-label">Material Lifecycle</span>
+    <h2 class="section-title">End-to-End Tracking</h2>
+    <p class="section-subtitle">Every material is tracked from gate arrival to final shipment with full audit history.</p>
+    <div class="workflow">
+      <div class="workflow-step">
+        <div class="step-num">1</div>
+        <h4>Receive</h4>
+        <p>Scan QR, capture PO, photos &amp; condition</p>
+      </div>
+      <div class="workflow-step">
+        <div class="step-num">2</div>
+        <h4>Inspect</h4>
+        <p>Document damage, accept or flag exceptions</p>
+      </div>
+      <div class="workflow-step">
+        <div class="step-num">3</div>
+        <h4>Store</h4>
+        <p>Assign zone, rack &amp; position in the yard</p>
+      </div>
+      <div class="workflow-step">
+        <div class="step-num">4</div>
+        <h4>Transfer</h4>
+        <p>Move between locations with audit trail</p>
+      </div>
+      <div class="workflow-step">
+        <div class="step-num">5</div>
+        <h4>Issue</h4>
+        <p>Issue materials against a job number</p>
+      </div>
+      <div class="workflow-step">
+        <div class="step-num">6</div>
+        <h4>Ship</h4>
+        <p>Record carrier, tracking &amp; destination</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div id="features" class="section fade-up">
+    <span class="section-label">Capabilities</span>
+    <h2 class="section-title">Built for the Field &amp; the Office</h2>
+    <p class="section-subtitle">Two role-based interfaces designed for how your teams actually work.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background: var(--primary-light); color: var(--primary);">&#128247;</div>
+        <h3>QR Scan &amp; Camera</h3>
+        <p>Instant barcode recognition with manual fallback. Attach inspection photos with automatic compression to under 500KB.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background: var(--accent-light); color: var(--accent);">&#128230;</div>
+        <h3>Receiving Wizard</h3>
+        <p>Six-step guided flow: material details, PO/delivery, inspection photos, condition assessment, accept/reject decision, location assignment.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background: var(--success-light); color: var(--success);">&#128205;</div>
+        <h3>Yard Management</h3>
+        <p>Define zones, racks, and positions. Assign materials to specific locations with searchable inventory browse and filters.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background: var(--warning-light); color: var(--warning);">&#9888;&#65039;</div>
+        <h3>Exception Handling</h3>
+        <p>Flagged items for damage, wrong type, or count mismatch flow into a dedicated exception queue for office resolution.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background: var(--purple-light); color: var(--purple);">&#128200;</div>
+        <h3>Dashboard &amp; Reports</h3>
+        <p>KPI cards, inventory charts, yard overview, aging reports, and CSV export — all from the office tab group.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background: var(--border-light); color: var(--text);">&#9993;&#65039;</div>
+        <h3>Offline-First</h3>
+        <p>Full write queue and read cache. Field workers stay productive with zero connectivity — data syncs automatically when back online.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screenshots -->
+  <div id="screens" class="section fade-up">
+    <span class="section-label">App Screens</span>
+    <h2 class="section-title">Purpose-Built Interfaces</h2>
+    <p class="section-subtitle">Optimized for phones in the field and tablets in the office.</p>
+    <div class="screenshots-grid">
+      <div class="screenshot-card">
+        <img src="images/07-office-dashboard.png" alt="Office Dashboard" loading="lazy">
+        <div class="caption">Office Dashboard</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="images/17-field-scan.PNG" alt="QR Scanner" loading="lazy">
+        <div class="caption">QR Scanner</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="images/14-receiving-wizard.png" alt="Receiving Wizard" loading="lazy">
+        <div class="caption">Receiving Wizard</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="images/08-office-materials.png" alt="Material Browser" loading="lazy">
+        <div class="caption">Material Browser</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="images/09-office-exceptions.png" alt="Exception Queue" loading="lazy">
+        <div class="caption">Exception Queue</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="images/10-office-locations.png" alt="Location Manager" loading="lazy">
+        <div class="caption">Location Manager</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="images/11-office-qr-codes.png" alt="QR Code Generator" loading="lazy">
+        <div class="caption">QR Code Generator</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="images/13-office-reports.png" alt="Reports" loading="lazy">
+        <div class="caption">Reports &amp; Export</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tech Stack -->
+  <div class="section fade-up">
+    <span class="section-label">Technology</span>
+    <h2 class="section-title">Modern, Proven Stack</h2>
+    <div class="tech-stack">
+      <div class="tech-pill"><span class="dot" style="background:#61dafb;"></span>React Native + Expo</div>
+      <div class="tech-pill"><span class="dot" style="background:#3fcf8e;"></span>Supabase (PostgreSQL)</div>
+      <div class="tech-pill"><span class="dot" style="background:#3178c6;"></span>TypeScript</div>
+      <div class="tech-pill"><span class="dot" style="background:#764abc;"></span>Zustand State</div>
+      <div class="tech-pill"><span class="dot" style="background:#ec4899;"></span>React Hook Form + Zod</div>
+      <div class="tech-pill"><span class="dot" style="background:#f59e0b;"></span>Expo Camera &amp; Print</div>
+      <div class="tech-pill"><span class="dot" style="background:#10b981;"></span>EAS Build (iOS/Android)</div>
+      <div class="tech-pill"><span class="dot" style="background:#6366f1;"></span>Row-Level Security</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div id="contact" class="cta fade-up">
+    <h2>Ready to Modernize Your Yard?</h2>
+    <p>Replace clipboards and spreadsheets with a purpose-built mobile platform. Deploys in days, not months.</p>
+    <a class="cta-button" href="mailto:jmolina@kindredindustrial.com">Get in Touch &#8594;</a>
+  </div>
+
+</div>
+
+<footer>
+  <p>&copy; 2026 InvenioTek &middot; Industrial Asset Management Platform</p>
+</footer>
+
+<script>
+  // Intersection Observer for fade-up animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
