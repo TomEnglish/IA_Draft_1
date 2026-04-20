@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Prototype — Invenio Unified System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #f8fafc;
+    --surface: #ffffff;
+    --raised: #f1f5f9;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --text-subtle: #94a3b8;
+
+    --primary: #0369a1;
+    --primary-hover: #075985;
+    --primary-soft: #e0f2fe;
+    --accent: #0891b2;
+    --accent-soft: #cffafe;
+
+    --success: #059669;
+    --success-soft: #d1fae5;
+    --warn: #d97706;
+    --warn-soft: #fef3c7;
+    --danger: #dc2626;
+    --danger-soft: #fee2e2;
+    --info: #7c3aed;
+    --info-soft: #ede9fe;
+
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+
+    --shadow-sm: 0 1px 2px rgba(15,23,42,0.05);
+    --shadow-md: 0 4px 12px rgba(15,23,42,0.08);
+    --shadow-lg: 0 12px 32px rgba(15,23,42,0.12);
+
+    --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--canvas);
+    color: var(--text);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--primary); text-decoration: none; }
+  a:hover { color: var(--primary-hover); }
+
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  nav {
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 0;
+    position: sticky; top: 0; z-index: 100;
+  }
+  nav .container { display: flex; align-items: center; justify-content: space-between; }
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 800; font-size: 18px; color: var(--primary);
+  }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 800;
+  }
+  .nav-links { display: flex; gap: 24px; }
+  .nav-links a {
+    color: var(--text-muted);
+    font-size: 14px; font-weight: 500;
+  }
+  .nav-links a:hover { color: var(--primary); }
+
+  /* ── Hero ── */
+  .hero {
+    margin-top: 40px;
+    padding: 48px 0 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--primary);
+  }
+  .hero h1 {
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 8px 0 16px;
+    max-width: 720px;
+  }
+  .hero p.lead {
+    font-size: 18px;
+    color: var(--text-muted);
+    max-width: 680px;
+    line-height: 1.55;
+  }
+  .hero-actions {
+    display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap;
+  }
+
+  /* ── Buttons (the real system) ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 16px;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background 120ms, color 120ms, border-color 120ms;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: var(--primary-hover); color: #fff; }
+  .btn-secondary {
+    background: var(--primary-soft);
+    color: var(--primary);
+    border-color: var(--primary);
+  }
+  .btn-secondary:hover { background: #cde9fb; color: var(--primary-hover); }
+  .btn-ghost { background: transparent; color: var(--text-muted); }
+  .btn-ghost:hover { background: var(--raised); color: var(--text); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-danger:hover { background: #b91c1c; color: #fff; }
+
+  /* ── Sections ── */
+  section.block { margin-top: 64px; }
+  .section-head { margin-bottom: 24px; }
+  .section-head h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 6px 0 8px;
+  }
+  .section-head .caption {
+    color: var(--text-muted);
+    font-size: 15px;
+    max-width: 720px;
+  }
+
+  .surface {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* ── Color grid ── */
+  .color-group { margin-bottom: 32px; }
+  .color-group .label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    margin-bottom: 12px;
+  }
+  .swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  .swatch {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .swatch-chip {
+    height: 88px;
+    display: flex; align-items: flex-end;
+    padding: 10px 12px;
+  }
+  .swatch-hex {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .swatch-name {
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  /* ── Type scale ── */
+  .type-demo { padding: 28px; display: grid; gap: 20px; }
+  .type-row { display: grid; grid-template-columns: 180px 1fr; gap: 24px; align-items: baseline; }
+  .type-row .tag {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-subtle);
+  }
+  .t-h1 { font-size: 48px; font-weight: 800; line-height: 1.1; }
+  .t-h2 { font-size: 32px; font-weight: 700; line-height: 1.2; }
+  .t-h3 { font-size: 20px; font-weight: 600; line-height: 1.3; }
+  .t-body { font-size: 16px; }
+  .t-small { font-size: 14px; color: var(--text-muted); }
+  .t-eyebrow {
+    font-size: 13px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--primary);
+  }
+
+  /* ── Button showcase ── */
+  .button-showcase {
+    padding: 28px;
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+  }
+
+  /* ── Stat tiles ── */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .stat-card { padding: 24px; display: grid; gap: 8px; }
+  .stat-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  /* ── Chips / tags ── */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .chip-success { background: var(--success-soft); color: var(--success); }
+  .chip-warn    { background: var(--warn-soft);    color: var(--warn); }
+  .chip-info    { background: var(--info-soft);    color: var(--info); }
+  .chip-danger  { background: var(--danger-soft);  color: var(--danger); }
+  .chip-primary { background: var(--primary-soft); color: var(--primary); }
+
+  /* ── Cards ── */
+  .card-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    padding: 24px;
+    display: grid;
+    gap: 12px;
+  }
+  .card .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* ── Table ── */
+  .table-wrap { overflow: hidden; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  thead th {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 12px 16px;
+    background: var(--raised);
+    border-bottom: 1px solid var(--border);
+  }
+  tbody td {
+    padding: 14px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: var(--raised); }
+  td.po { font-weight: 600; font-family: var(--mono); }
+  td.due { color: var(--text-muted); }
+
+  /* ── Tag row ── */
+  .tag-row {
+    padding: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* ── Footer ── */
+  footer {
+    margin-top: 80px;
+    padding: 32px 0;
+    border-top: 1px solid var(--border);
+    color: var(--text-subtle);
+    font-size: 14px;
+  }
+  footer a { color: var(--text-muted); }
+
+  /* ── Small screens ── */
+  @media (max-width: 720px) {
+    .hero h1 { font-size: 36px; }
+    .type-row { grid-template-columns: 1fr; gap: 6px; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="/" class="logo">
+      <span class="logo-icon">I</span>
+      Invenio
+    </a>
+    <div class="nav-links">
+      <a href="#colors">Colors</a>
+      <a href="#type">Type</a>
+      <a href="#buttons">Buttons</a>
+      <a href="#patterns">Patterns</a>
+      <a href="/">Back to app</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <header class="hero">
+    <span class="eyebrow">Design prototype</span>
+    <h1>Invenio unified system</h1>
+    <p class="lead">
+      One token set, one type scale, one component vocabulary — so every surface
+      (presentation, engineering platform, MSR dashboard, field app) feels like
+      the same product.
+    </p>
+    <div class="hero-actions">
+      <a href="/" class="btn btn-primary">Continue to app</a>
+      <a href="https://github.com/TomEnglish/IA_Draft_1" class="btn btn-secondary" target="_blank" rel="noopener">View on GitHub</a>
+      <a href="#tokens" class="btn btn-ghost">Jump to tokens</a>
+    </div>
+  </header>
+
+  <section class="block" id="colors">
+    <div class="section-head">
+      <span class="eyebrow">01 — Foundation</span>
+      <h2>Color tokens</h2>
+      <p class="caption">Tailwind slate spine with sky/cyan as the primary brand pair. Status colors pick from the same ramp as the existing sites so nothing has to be relearned.</p>
+    </div>
+
+    <div class="color-group">
+      <div class="label">Neutral</div>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-chip" style="background:#f8fafc;color:#1e293b"><span class="swatch-hex">#F8FAFC</span></div><div class="swatch-name">canvas</div></div>
+        <div class="swatch"><div class="swatch-chip" style="background:#ffffff;color:#1e293b;border-bottom:1px solid #e2e8f0"><span class="swatch-hex">#FFFFFF</span></div><div class="swatch-name">surface</div></div>
+        <div class="swatch"><div class="swatch-chip" style="background:#f1f5f9;color:#1e293b"><span class="swatch-hex">#F1F5F9</span></div><div class="swatch-name">raised</div></div>
+        <div class="swatch"><div class="swatch-chip" style="background:#e2e8f0;color:#1e293b"><span class="swatch-hex">#E2E8F0</span></div><div class="swatch-name">border</div></div>
+        <div class="swatch"><div class="swatch-chip" style="background:#64748b;color:#fff"><span class="swatch-hex">#64748B</span></div><div class="swatch-name">text / muted</div></div>
+        <div class="swatch"><div class="swatch-chip" style="background:#1e293b;color:#fff"><span class="swatch-hex">#1E293B</span></div><div class="swatch-name">text / primary</div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="label">Brand</div>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-chip" style="background:#0369a1;color:#fff"><span class="swatch-hex">#0369A1</span></div><div class="swatch-name">primary (sky-700)</div></div>
+        <div class="swatch"><div class="swatch-chip" style="background:#0891b2;color:#fff"><span class="swatch-hex">#0891B2</span></div><div class="swatch-name">accent (cyan-600)</div></div>
+        <div class="swatch"><div class="swatch-chip" style="background:#e0f2fe;color:#0369a1"><span class="swatch-hex">#E0F2FE</span></div><div class="swatch-name">primary soft</div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="label">Status</div>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-chip" style="background:#059669;color:#fff"><span class="swatch-hex">#059669</span></div><div class="swatch-name">success</div></div>
+        <div class="swatch"><div class="swatch-chip" style="background:#d97706;color:#fff"><span class="swatch-hex">#D97706</span></div><div class="swatch-name">warn</div></div>
+        <div class="swatch"><div class="swatch-chip" style="background:#dc2626;color:#fff"><span class="swatch-hex">#DC2626</span></div><div class="swatch-name">danger</div></div>
+        <div class="swatch"><div class="swatch-chip" style="background:#7c3aed;color:#fff"><span class="swatch-hex">#7C3AED</span></div><div class="swatch-name">info</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="type">
+    <div class="section-head">
+      <span class="eyebrow">02 — Typography</span>
+      <h2>Type scale</h2>
+      <p class="caption">Inter everywhere. JetBrains Mono for drawings, POs, and dense numeric data. App body sits at 14px; marketing body at 16px.</p>
+    </div>
+    <div class="surface type-demo">
+      <div class="type-row"><span class="tag">H1 / 48 / 800</span><div class="t-h1">Laydown yard, under control.</div></div>
+      <div class="type-row"><span class="tag">H2 / 32 / 700</span><div class="t-h2">Real-time material tracking</div></div>
+      <div class="type-row"><span class="tag">H3 / 20 / 600</span><div class="t-h3">Purchase order detail</div></div>
+      <div class="type-row"><span class="tag">Body / 16 / 400</span><div class="t-body">Scan a QR code to receive, relocate, or issue material. All actions sync when the device is back online.</div></div>
+      <div class="type-row"><span class="tag">Small / 14 / 400</span><div class="t-small">Used for dense table rows and app screens.</div></div>
+      <div class="type-row"><span class="tag">Eyebrow / 13 / 700</span><div class="t-eyebrow">Section label</div></div>
+    </div>
+  </section>
+
+  <section class="block" id="buttons">
+    <div class="section-head">
+      <span class="eyebrow">03 — Components</span>
+      <h2>Buttons</h2>
+      <p class="caption">Four variants cover 95% of use cases. 40px height, 8px radius, weight 600. Secondary adopts the tonal-sky pattern from the engineering demo.</p>
+    </div>
+    <div class="surface button-showcase">
+      <a href="#" class="btn btn-primary">Save changes</a>
+      <a href="#" class="btn btn-secondary">Preview</a>
+      <a href="#" class="btn btn-ghost">Cancel</a>
+      <a href="#" class="btn btn-danger">Delete</a>
+    </div>
+  </section>
+
+  <section class="block" id="patterns">
+    <div class="section-head">
+      <span class="eyebrow">04 — Patterns</span>
+      <h2>Stat tiles</h2>
+      <p class="caption">Dashboard KPI pattern for the MSR surface — uppercase eyebrow, large number, delta chip.</p>
+    </div>
+    <div class="stats">
+      <div class="surface stat-card">
+        <div class="stat-label">Open POs</div>
+        <div class="stat-value">142</div>
+        <span class="chip chip-success">+8 this week</span>
+      </div>
+      <div class="surface stat-card">
+        <div class="stat-label">On-site value</div>
+        <div class="stat-value">$4.8M</div>
+        <span class="chip chip-success">+$320k</span>
+      </div>
+      <div class="surface stat-card">
+        <div class="stat-label">Exceptions</div>
+        <div class="stat-value">6</div>
+        <span class="chip chip-warn">2 overdue</span>
+      </div>
+      <div class="surface stat-card">
+        <div class="stat-label">RTS today</div>
+        <div class="stat-value">37</div>
+        <span class="chip chip-info">3 pending</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head">
+      <h2>Cards</h2>
+      <p class="caption">White surface, 12px radius, 1px border, subtle shadow, 24px padding. Never mix radii — cards always use <code>--radius-lg</code>.</p>
+    </div>
+    <div class="card-row">
+      <div class="surface card">
+        <span class="eyebrow">Greenfield LNG</span>
+        <div class="t-h3">Module MR-402 received</div>
+        <div class="t-small">Container #884201 · 12 items · QA passed</div>
+        <div class="chips">
+          <span class="chip chip-success">Delivered</span>
+          <span class="chip chip-info">RTS</span>
+        </div>
+      </div>
+      <div class="surface card">
+        <span class="eyebrow" style="color:var(--warn)">Action required</span>
+        <div class="t-h3">PO 99214 missing BOL</div>
+        <div class="t-small">Receiver could not match packing list to purchase order line 17.</div>
+        <div class="chips">
+          <a href="#" class="btn btn-secondary" style="height:32px;padding:0 12px;font-size:13px">Open exception</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head">
+      <h2>Table</h2>
+      <p class="caption">13px uppercase eyebrow headers, 14px body, row hover uses <code>--raised</code>. One border style — the 1px border between rows.</p>
+    </div>
+    <div class="surface table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 120px">PO</th>
+            <th>Description</th>
+            <th style="width: 140px">Status</th>
+            <th style="width: 90px">Due</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="po">PO-99201</td><td>Pipe spool, 6" SA-106</td><td><span class="chip chip-success">Delivered</span></td><td class="due">Apr 18</td></tr>
+          <tr><td class="po">PO-99214</td><td>Valve, 4" flanged</td><td><span class="chip chip-info">In transit</span></td><td class="due">Apr 21</td></tr>
+          <tr><td class="po">PO-99218</td><td>Structural beam W12x26</td><td><span class="chip chip-warn">Not RTS</span></td><td class="due">Apr 22</td></tr>
+          <tr><td class="po">PO-99230</td><td>Cable tray 24"</td><td><span class="chip chip-success">RTS</span></td><td class="due">Apr 19</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="block" id="tokens">
+    <div class="section-head">
+      <h2>Tags &amp; chips</h2>
+      <p class="caption">Tonal fill, matching text color, 6px radius, weight 600. Five tones — success, warn, danger, info, primary — cover every status the three sites currently invent ad hoc.</p>
+    </div>
+    <div class="surface tag-row">
+      <span class="chip chip-success">Delivered</span>
+      <span class="chip chip-info">In transit</span>
+      <span class="chip chip-warn">Not RTS</span>
+      <span class="chip chip-danger">Missing BOL</span>
+      <span class="chip chip-success">QA passed</span>
+      <span class="chip chip-primary">RTS</span>
+    </div>
+  </section>
+
+  <footer>
+    <div>Prototype route · not wired into auth. Built as the common baseline for <a href="https://kindredpresentation.netlify.app">kindredpresentation</a>, <a href="https://kindredengdemo.netlify.app">kindredengdemo</a>, and <a href="https://invenio-msr.netlify.app">invenio-msr</a>.</div>
+  </footer>
+
+</div>
+
+</body>
+</html>
