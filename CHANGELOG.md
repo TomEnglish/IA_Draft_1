@@ -1,5 +1,36 @@
 # Changelog — Invenio Design System
 
+<!-- v0.4.0 — RN primitive parity + modal focus trap -->
+
+## [0.4.0] — 2026-04-21
+
+### Added — six new RN primitives under `components/ui/`
+All six match the HTML prototype's a11y semantics (correct `accessibilityRole`, `accessibilityState`, `accessibilityLiveRegion`) and meet the 44px minimum touch-target rule. Closes the reviewer's "RN primitive gap" P0:
+
+- **`Checkbox.tsx`** — tap-to-toggle, role="checkbox", `checked` state, optional label, disabled.
+- **`Radio.tsx` + `RadioGroup.tsx`** — single `Radio` for edge cases; `RadioGroup<T>` handles the common flat-list case with `value` / `onChange` / `options`.
+- **`Switch.tsx`** — wraps RN `Switch` with tokenized `trackColor` / `thumbColor`; optional inline label layout.
+- **`Select.tsx`** — labeled combobox (`accessibilityRole="combobox"`) with helper/error/required/disabled. Tap opens a `Modal` with a scrollable option list. Active item highlighted + ✓ icon. Generic over the value type.
+- **`Modal.tsx`** — tokenized backdrop + dialog surface around native `<Modal>`. `title` / `children` / `actions` slots. `dismissOnBackdrop` toggle for destructive confirmations.
+- **`Toast.tsx`** — four tones (`success` / `info` / `warn` / `danger`). Status tones use polite live-region; alert tones (warn/danger) use `role="alert"` + assertive live-region so screen readers interrupt. Optional auto-dismiss + explicit dismiss button.
+
+### Added — modal focus trap (docs/prototype.html)
+Closes the reviewer's "aria-modal without trap = false a11y signal" P1. The modal now:
+- Stores the element that held focus before open, focuses the first focusable inside the dialog on open, restores focus to the opener on close.
+- Traps Tab / Shift+Tab — cycles between the first and last focusable elements inside the dialog.
+- Escape closes; backdrop click closes; both dispatch `closeModal()` which restores focus correctly.
+
+### Added — barrel export `components/ui/index.ts`
+Import primitives from one path: `import { Button, Input, Checkbox, Select, Modal, Toast, Switch, RadioGroup } from '@/components/ui';` instead of eight separate paths. Tokens remain in `@/lib/design/tokens`.
+
+### Changed — `ProjectSelector` now uses the new `Modal` primitive
+Deleted its hand-rolled backdrop + modal-content styles. Demonstrates that the new primitives actually replace consumer-rolled chrome, not just sit in the library.
+
+### Known open
+- **DataTable primitive** for MSR surface — sort headers, pagination, filter chips, sticky header, skeleton loading. Reviewer's remaining P1 item.
+
+---
+
 <!-- v0.3.0 — corrections + app-wide tokenization -->
 
 ## [0.3.0] — 2026-04-21

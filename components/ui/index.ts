@@ -1,0 +1,24 @@
+/**
+ * Barrel export for the Invenio design-system primitives.
+ *
+ * Import from here, not from the individual files:
+ *   import { Button, Input, Checkbox } from '@/components/ui';
+ *
+ * Tokens (colors, radius, space, shadow, etc.) live in
+ *   @/lib/design/tokens
+ * — not re-exported here so components and tokens stay cleanly separated.
+ */
+export { Button } from './Button';
+export { Card } from './Card';
+export { Checkbox } from './Checkbox';
+export { AppErrorBoundary } from './ErrorBoundary';
+export { Input } from './Input';
+export { LoadingScreen } from './LoadingScreen';
+export { Modal } from './Modal';
+export { OfflineIndicator } from './OfflineIndicator';
+export { ProjectSelector } from './ProjectSelector';
+export { Radio, RadioGroup } from './Radio';
+export { Select } from './Select';
+export { SignOutButton } from './SignOutButton';
+export { Switch } from './Switch';
+export { Toast, type ToastTone } from './Toast';

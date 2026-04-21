@@ -1192,21 +1192,70 @@
       mark.src = theme === 'dark' ? 'brand/invenio-mark-dark.svg' : 'brand/invenio-mark.svg';
     }
 
-    // Modal open/close
+    // ─── Modal with focus trap (WCAG 2.1 AA) ───
     var backdrop = document.getElementById('modal-backdrop');
+    var modalEl = backdrop ? backdrop.querySelector('.modal') : null;
     var openBtn = document.getElementById('modal-open');
     var cancelBtn = document.getElementById('modal-cancel');
     var confirmBtn = document.getElementById('modal-confirm');
-    function closeModal() { if (backdrop) backdrop.classList.remove('open'); }
-    function openModal() { if (backdrop) backdrop.classList.add('open'); }
+    var lastFocused = null;
+
+    var FOCUSABLE = [
+      'a[href]', 'button:not([disabled])', 'textarea:not([disabled])',
+      'input:not([disabled])', 'select:not([disabled])',
+      '[tabindex]:not([tabindex="-1"])'
+    ].join(',');
+
+    function getFocusable() {
+      return modalEl ? Array.prototype.slice.call(modalEl.querySelectorAll(FOCUSABLE)) : [];
+    }
+
+    function closeModal() {
+      if (!backdrop) return;
+      backdrop.classList.remove('open');
+      // Restore focus to whatever had it before the modal opened.
+      if (lastFocused && typeof lastFocused.focus === 'function') {
+        lastFocused.focus();
+      }
+      lastFocused = null;
+    }
+
+    function openModal() {
+      if (!backdrop) return;
+      lastFocused = document.activeElement;
+      backdrop.classList.add('open');
+      // Focus the first focusable element inside the dialog.
+      var focusables = getFocusable();
+      if (focusables.length) focusables[0].focus();
+    }
+
     if (openBtn) openBtn.addEventListener('click', openModal);
     if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
     if (confirmBtn) confirmBtn.addEventListener('click', closeModal);
     if (backdrop) backdrop.addEventListener('click', function (e) {
       if (e.target === backdrop) closeModal();
     });
+
+    // Keyboard handling — Escape closes; Tab/Shift+Tab cycles within dialog.
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && backdrop && backdrop.classList.contains('open')) closeModal();
+      if (!backdrop || !backdrop.classList.contains('open')) return;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeModal();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      var focusables = getFocusable();
+      if (!focusables.length) return;
+      var first = focusables[0];
+      var last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     });
 
     // Toast dismiss

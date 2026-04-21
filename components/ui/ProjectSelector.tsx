@@ -3,15 +3,14 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useState } from 'react';
 import {
   FlatList,
-  Modal,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   type TextStyle,
-  type ViewStyle,
 } from 'react-native';
-import { colors, radius, space, fontSize, fontWeight, shadow } from '@/lib/design/tokens';
+import { Modal } from './Modal';
+import { colors, radius, space, fontSize, fontWeight } from '@/lib/design/tokens';
 
 export function ProjectSelector() {
   const { activeProject, availableProjects, setActiveProject } = useAuthStore();
@@ -37,47 +36,41 @@ export function ProjectSelector() {
         <FontAwesome name="caret-down" size={16} color={colors.brandPrimary} />
       </TouchableOpacity>
 
-      <Modal visible={modalVisible} transparent animationType="fade">
-        <TouchableOpacity
-          style={styles.modalOverlay}
-          activeOpacity={1}
-          onPress={() => setModalVisible(false)}
-          accessibilityLabel="Close project selector"
-        >
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Select Project</Text>
-            <FlatList
-              data={availableProjects}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[
-                    styles.projectItem,
-                    item.id === activeProject.id && styles.projectItemActive,
-                  ]}
-                  onPress={() => {
-                    setActiveProject(item.id);
-                    setModalVisible(false);
-                  }}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: item.id === activeProject.id }}
+      <Modal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        title="Select project"
+        accessibilityLabel="Project selector"
+      >
+        <FlatList
+          data={availableProjects}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => {
+            const isActive = item.id === activeProject.id;
+            return (
+              <TouchableOpacity
+                style={[styles.projectItem, isActive && styles.projectItemActive]}
+                onPress={() => {
+                  setActiveProject(item.id);
+                  setModalVisible(false);
+                }}
+                accessibilityRole="button"
+                accessibilityState={{ selected: isActive }}
+              >
+                <Text
+                  style={[styles.projectItemText, isActive && styles.projectItemTextActive]}
                 >
-                  <Text
-                    style={[
-                      styles.projectItemText,
-                      item.id === activeProject.id && styles.projectItemTextActive,
-                    ]}
-                  >
-                    {item.name}
-                  </Text>
-                  {item.id === activeProject.id && (
-                    <FontAwesome name="check" size={16} color={colors.brandPrimary} />
-                  )}
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-        </TouchableOpacity>
+                  {item.name}
+                </Text>
+                {isActive ? (
+                  <FontAwesome name="check" size={16} color={colors.brandPrimary} />
+                ) : null}
+              </TouchableOpacity>
+            );
+          }}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          style={{ maxHeight: 320 }}
+        />
       </Modal>
     </View>
   );
@@ -108,41 +101,15 @@ const styles = StyleSheet.create({
     color: colors.brandPrimary,
     fontWeight: fontWeight.semibold as TextStyle['fontWeight'],
   },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: colors.overlay,
-    justifyContent: 'center',
-    alignItems: 'center',
-  } as ViewStyle,
-  modalContent: {
-    width: '80%',
-    maxHeight: '70%',
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    padding: space[4],
-    ...shadow.md,
-  },
-  modalTitle: {
-    fontSize: fontSize.md + 2,
-    fontWeight: fontWeight.bold as TextStyle['fontWeight'],
-    marginBottom: space[4],
-    color: colors.textPrimary,
-    textAlign: 'center',
-  },
   projectItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: space[3],
-    paddingHorizontal: space[4],
-    borderBottomWidth: 1,
-    borderBottomColor: colors.raised,
-  },
-  projectItemActive: {
-    backgroundColor: colors.brandPrimarySoft,
+    paddingHorizontal: space[3],
     borderRadius: radius.md,
-    borderBottomWidth: 0,
   },
+  projectItemActive: { backgroundColor: colors.brandPrimarySoft },
   projectItemText: {
     fontSize: fontSize.md,
     color: colors.textPrimary,
@@ -151,4 +118,5 @@ const styles = StyleSheet.create({
     color: colors.brandPrimary,
     fontWeight: fontWeight.semibold as TextStyle['fontWeight'],
   },
+  separator: { height: 1, backgroundColor: colors.raised },
 });
