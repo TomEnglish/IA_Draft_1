@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Brand Assets — Invenio</title>
+<meta name="description" content="Invenio brand assets — marks, lockup, favicon, color specifications, and usage rules.">
+<meta property="og:title" content="Invenio Brand Assets">
+<meta property="og:description" content="Marks, lockup, favicon, and usage rules for the Invenio brand.">
+<meta property="og:image" content="https://invenioinvapp.netlify.app/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://invenioinvapp.netlify.app/brand.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://invenioinvapp.netlify.app/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -28,6 +36,11 @@
     --radius-sm: 6px;
     --radius-md: 8px;
     --radius-lg: 12px;
+    --motion-fast: 120ms;
+    --motion-standard: 180ms;
+    --motion-slow: 260ms;
+    --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+    --ease-emphasized: cubic-bezier(0.3, 0, 0, 1.2);
     --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
   }
   [data-theme="dark"] {
@@ -54,7 +67,7 @@
     color: var(--text);
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
-    transition: background-color 180ms ease, color 180ms ease;
+    transition: background-color var(--motion-standard) var(--ease-standard), color var(--motion-standard) var(--ease-standard);
   }
   a { color: var(--primary); text-decoration: none; }
   a:hover { color: var(--primary-hover); }
@@ -279,6 +292,7 @@
       <a href="#lockup">Lockup</a>
       <a href="#sizes">Sizes</a>
       <a href="#rules">Rules</a>
+      <a href="email.html">Email</a>
       <a href="/">Back to app</a>
       <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle color theme">
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -358,12 +372,15 @@
       </div>
       <div>
         <div class="asset-stage dark-surface lockup-stage">
-          <span class="label">lockup on dark · needs dark variant (TODO)</span>
-          <img src="brand/invenio-lockup.svg" alt="Invenio lockup" style="filter: invert(1) hue-rotate(180deg);">
+          <span class="label">lockup on dark · invenio-lockup-dark.svg</span>
+          <img src="brand/invenio-lockup-dark.svg" alt="Invenio lockup (dark)">
         </div>
         <div class="meta-row">
-          <span class="file">brand/invenio-lockup-dark.svg <em>— to author</em></span>
-          <span class="download-links"></span>
+          <span class="file">brand/invenio-lockup-dark.svg</span>
+          <span class="download-links">
+            <a href="brand/invenio-lockup-dark.svg" download>Download SVG</a>
+            <a href="brand/invenio-lockup-dark.svg" target="_blank" rel="noopener">Open raw</a>
+          </span>
         </div>
       </div>
     </div>

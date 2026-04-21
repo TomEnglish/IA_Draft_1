@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Design Prototype — Invenio Unified System</title>
+<meta name="description" content="The unified Invenio design system — tokens, typography, buttons, tables, primitives, and dark theme for the industrial material tracking platform.">
+<meta property="og:title" content="Invenio Design System">
+<meta property="og:description" content="The unified design system for industrial material tracking — tokens, components, brand.">
+<meta property="og:image" content="https://invenioinvapp.netlify.app/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://invenioinvapp.netlify.app/prototype.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://invenioinvapp.netlify.app/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -39,6 +47,12 @@
     --mark: url('brand/invenio-mark.svg');
 
     --ring: 0 0 0 2px var(--canvas), 0 0 0 4px var(--primary);
+
+    --motion-fast: 120ms;
+    --motion-standard: 180ms;
+    --motion-slow: 260ms;
+    --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+    --ease-emphasized: cubic-bezier(0.3, 0, 0, 1.2);
 
     --radius-sm: 6px;
     --radius-md: 8px;
@@ -95,7 +109,7 @@
     color: var(--text);
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
-    transition: background-color 180ms ease, color 180ms ease;
+    transition: background-color var(--motion-standard) var(--ease-standard), color var(--motion-standard) var(--ease-standard);
   }
 
   a { color: var(--primary); text-decoration: none; }
@@ -132,7 +146,7 @@
     color: var(--text-muted);
     border-radius: var(--radius-md);
     cursor: pointer;
-    transition: color 120ms, border-color 120ms, background 120ms;
+    transition: color var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard);
   }
   .theme-toggle:hover { color: var(--primary); border-color: var(--primary); }
   .theme-toggle svg { width: 18px; height: 18px; }
@@ -181,7 +195,7 @@
     font-weight: 600;
     cursor: pointer;
     border: 1px solid transparent;
-    transition: background 120ms, color 120ms, border-color 120ms;
+    transition: background var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard);
     text-decoration: none;
   }
   .btn-primary { background: var(--primary); color: #fff; }
@@ -365,6 +379,38 @@
   td.po { font-weight: 600; font-family: var(--mono); }
   td.due { color: var(--text-muted); }
 
+  /* Density variants — swap class on <table> */
+  table.density-compact thead th { padding: 8px 12px; font-size: 11px; }
+  table.density-compact tbody td { padding: 6px 12px; font-size: 13px; line-height: 1.35; }
+  table.density-spacious thead th { padding: 16px 20px; }
+  table.density-spacious tbody td { padding: 18px 20px; font-size: 15px; }
+
+  .density-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+    background: var(--raised);
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+  }
+  .density-toggle button {
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard);
+  }
+  .density-toggle button.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow-sm);
+  }
+
   /* ── Tag row ── */
   .tag-row {
     padding: 28px;
@@ -421,7 +467,7 @@
 
   /* ── Focus ring (a11y) ── */
   :focus { outline: none; }
-  :focus-visible { outline: none; box-shadow: var(--ring); border-radius: var(--radius-sm); transition: box-shadow 120ms; }
+  :focus-visible { outline: none; box-shadow: var(--ring); border-radius: var(--radius-sm); transition: box-shadow var(--motion-fast) var(--ease-standard); }
   .btn:focus-visible,
   .theme-toggle:focus-visible,
   a.nav-links:focus-visible,
@@ -446,7 +492,7 @@
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     padding: 8px 12px;
-    transition: border-color 120ms, box-shadow 120ms, background 120ms;
+    transition: border-color var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard);
   }
   .form-input::placeholder, .form-textarea::placeholder { color: var(--text-subtle); }
   .form-input:hover, .form-select:hover, .form-textarea:hover { border-color: var(--border-strong); }
@@ -494,7 +540,7 @@
     cursor: pointer;
     display: inline-block;
     position: relative;
-    transition: background 120ms, border-color 120ms;
+    transition: background var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard);
     flex-shrink: 0;
   }
   [data-theme="dark"] .form-check { border-color: var(--border); }
@@ -530,7 +576,7 @@
     border-radius: 999px;
     cursor: pointer;
     position: relative;
-    transition: background 180ms;
+    transition: background var(--motion-standard) var(--ease-standard);
     flex-shrink: 0;
   }
   .form-switch::after {
@@ -541,7 +587,7 @@
     border-radius: 50%;
     background: white;
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    transition: transform 180ms;
+    transition: transform var(--motion-standard) var(--ease-emphasized);
   }
   .form-switch:checked { background: var(--primary); }
   .form-switch:checked::after { transform: translateX(16px); }
@@ -643,6 +689,46 @@
   }
   footer a { color: var(--text-muted); }
 
+  /* ── Print stylesheet ──
+     Industrial clients export every dashboard to PDF. Strip chrome,
+     force black-on-white, keep tables intact across page breaks. */
+  @media print {
+    body { background: #fff; color: #000; font-size: 11pt; }
+    nav, .theme-toggle, .density-toggle, .hero-actions, .modal-backdrop,
+    footer, .icon-tile, .toast-close, .button-showcase {
+      display: none !important;
+    }
+    .container { max-width: 100%; padding: 0; }
+    a { color: #000; text-decoration: underline; }
+    a[href]::after { content: " (" attr(href) ")"; font-size: 9pt; color: #444; }
+    .surface, .stat-card, .card, .feature-card, .type-demo, .primitive-card {
+      background: #fff !important;
+      box-shadow: none !important;
+      border: 1px solid #000 !important;
+      break-inside: avoid;
+    }
+    .hero h1 { font-size: 24pt; }
+    h2 { font-size: 16pt; }
+    h3 { font-size: 13pt; }
+    thead { display: table-header-group; }
+    tbody tr { break-inside: avoid; }
+    tbody td { border-bottom: 1px solid #000 !important; padding: 6px 10px !important; }
+    thead th { background: #eee !important; color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .chip { border: 1px solid currentColor; }
+    section.block { margin-top: 24px; break-inside: avoid-page; }
+    section { page-break-inside: avoid; }
+  }
+
+  /* ── Reduced motion ── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
   /* ── Small screens ── */
   @media (max-width: 720px) {
     .hero h1 { font-size: 36px; }
@@ -666,6 +752,7 @@
       <a href="#patterns">Patterns</a>
       <a href="#primitives">Primitives</a>
       <a href="brand.html">Brand</a>
+      <a href="email.html">Email</a>
       <a href="/">Back to app</a>
       <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle color theme">
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -820,10 +907,15 @@
   <section class="block">
     <div class="section-head">
       <h2>Table</h2>
-      <p class="caption">13px uppercase eyebrow headers, 14px body, row hover uses <code>--raised</code>. One border style — the 1px border between rows.</p>
+      <p class="caption">13px uppercase eyebrow headers, 14px body, row hover uses <code>--raised</code>. Three density variants for different contexts — compact for data-dense dashboards (MSR scans 50+ rows), default for most surfaces, spacious for marketing / customer-facing comparison tables. Toggle below affects only the table below it.</p>
+    </div>
+    <div class="density-toggle" role="group" aria-label="Table density">
+      <button data-density="compact">Compact</button>
+      <button data-density="" class="active">Default</button>
+      <button data-density="spacious">Spacious</button>
     </div>
     <div class="surface table-wrap">
-      <table>
+      <table id="density-table">
         <thead>
           <tr>
             <th style="width: 120px">PO</th>
@@ -1122,6 +1214,20 @@
       b.addEventListener('click', function () {
         var toast = b.closest('.toast');
         if (toast) toast.style.display = 'none';
+      });
+    });
+
+    // Density toggle
+    var densityButtons = document.querySelectorAll('.density-toggle button');
+    var densityTable = document.getElementById('density-table');
+    densityButtons.forEach(function (b) {
+      b.addEventListener('click', function () {
+        densityButtons.forEach(function (x) { x.classList.remove('active'); });
+        b.classList.add('active');
+        if (!densityTable) return;
+        densityTable.classList.remove('density-compact', 'density-spacious');
+        var v = b.getAttribute('data-density');
+        if (v) densityTable.classList.add('density-' + v);
       });
     });
   })();
