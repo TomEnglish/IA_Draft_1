@@ -689,6 +689,160 @@
   }
   footer a { color: var(--text-muted); }
 
+  /* ── DataTable primitive ── */
+  .datatable-wrap {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .datatable-toolbar {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--raised);
+  }
+  .datatable-toolbar .count {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .filter-bar {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    min-height: 32px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard);
+  }
+  .filter-chip:hover { border-color: var(--border-strong, #cbd5e1); color: var(--text); }
+  .filter-chip.active {
+    background: var(--primary-soft);
+    color: var(--primary);
+    border-color: var(--primary);
+  }
+
+  .datatable-scroll {
+    max-height: 360px;
+    overflow-y: auto;
+  }
+  .datatable-scroll thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  .sort-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    user-select: none;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    font: inherit;
+    padding: 0;
+    text-transform: inherit;
+    letter-spacing: inherit;
+  }
+  .sort-header:hover { color: var(--text); }
+  .sort-header .sort-icon { opacity: 0.35; transition: opacity var(--motion-fast) var(--ease-standard); }
+  .sort-header.active { color: var(--text); }
+  .sort-header.active .sort-icon { opacity: 1; color: var(--primary); }
+  .sort-icon svg { width: 12px; height: 12px; display: block; }
+
+  .datatable-empty {
+    padding: 56px 24px;
+    text-align: center;
+    color: var(--text-muted);
+    display: flex; flex-direction: column; gap: 10px; align-items: center;
+  }
+  .datatable-empty .icon {
+    width: 40px; height: 40px;
+    border-radius: var(--radius-md);
+    background: var(--raised);
+    color: var(--text-subtle);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .datatable-empty .title { font-size: 15px; font-weight: 600; color: var(--text); }
+  .datatable-empty .caption { font-size: 13px; }
+
+  /* Skeleton */
+  .datatable-skeleton-row td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .skeleton-bar {
+    height: 14px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--raised) 25%, var(--border) 50%, var(--raised) 75%);
+    background-size: 400% 100%;
+    animation: skeleton-pulse 1400ms linear infinite;
+  }
+  .skeleton-bar.sm { width: 50%; }
+  .skeleton-bar.md { width: 75%; }
+  .skeleton-bar.lg { width: 95%; }
+  @keyframes skeleton-pulse {
+    0% { background-position: 100% 0; }
+    100% { background-position: 0 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton-bar { animation: none; background: var(--raised); }
+  }
+
+  /* Pagination */
+  .pagination {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .pagination-info { font-size: 13px; color: var(--text-muted); }
+  .pagination-controls { display: inline-flex; align-items: center; gap: 4px; }
+  .pagination-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px; height: 32px;
+    border-radius: var(--radius-md);
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    cursor: pointer;
+    transition: background var(--motion-fast) var(--ease-standard);
+  }
+  .pagination-btn:hover:not([disabled]) { background: var(--raised); }
+  .pagination-btn[disabled] { opacity: 0.4; cursor: not-allowed; }
+  .pagination-btn svg { width: 14px; height: 14px; }
+  .pagination-page {
+    padding: 0 10px;
+    font-size: 13px;
+    color: var(--text);
+    min-width: 60px;
+    text-align: center;
+  }
+
   /* ── Print stylesheet ──
      Industrial clients export every dashboard to PDF. Strip chrome,
      force black-on-white, keep tables intact across page breaks. */
@@ -751,6 +905,7 @@
       <a href="#icons">Icons</a>
       <a href="#patterns">Patterns</a>
       <a href="#primitives">Primitives</a>
+      <a href="#datatable">Table</a>
       <a href="brand.html">Brand</a>
       <a href="email.html">Email</a>
       <a href="/">Back to app</a>
@@ -987,6 +1142,84 @@
       <div class="surface icon-tile">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 0 1 2-2h2l2-3h6l2 3h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="4"/></svg>
         <span class="name">camera</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="datatable">
+    <div class="section-head">
+      <span class="eyebrow">08 — DataTable</span>
+      <h2>Dense-data table for MSR dashboards</h2>
+      <p class="caption">The surface the MSR dashboard (50+ rows) was missing: sortable headers with <code>aria-sort</code>, filter chips, sticky headers on scroll, keyboard-accessible pagination, and a skeleton loading state. Try clicking column headers to sort, or the filter chips to narrow.</p>
+    </div>
+
+    <div class="datatable-wrap">
+      <div class="datatable-toolbar">
+        <div class="filter-bar" role="tablist" aria-label="Status filter">
+          <button class="filter-chip active" data-filter="" role="tab" aria-selected="true">All</button>
+          <button class="filter-chip" data-filter="Delivered" role="tab" aria-selected="false">Delivered</button>
+          <button class="filter-chip" data-filter="In transit" role="tab" aria-selected="false">In transit</button>
+          <button class="filter-chip" data-filter="Not RTS" role="tab" aria-selected="false">Not RTS</button>
+          <button class="filter-chip" data-filter="RTS" role="tab" aria-selected="false">RTS</button>
+          <button class="filter-chip" data-filter="__empty__" role="tab" aria-selected="false">Show empty state</button>
+          <button class="filter-chip" data-filter="__loading__" role="tab" aria-selected="false">Show skeleton</button>
+        </div>
+        <div class="count" id="dt-count">Showing 12 of 12</div>
+      </div>
+
+      <div class="datatable-scroll">
+        <table id="dt-table" aria-labelledby="dt-count">
+          <thead>
+            <tr>
+              <th style="width: 120px">
+                <button class="sort-header active" data-sort="po" aria-sort="ascending">
+                  PO
+                  <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 15l5 5 5-5M7 9l5-5 5 5"/></svg></span>
+                </button>
+              </th>
+              <th>
+                <button class="sort-header" data-sort="description" aria-sort="none">
+                  Description
+                  <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 15l5 5 5-5M7 9l5-5 5 5"/></svg></span>
+                </button>
+              </th>
+              <th style="width: 140px">
+                <button class="sort-header" data-sort="status" aria-sort="none">
+                  Status
+                  <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 15l5 5 5-5M7 9l5-5 5 5"/></svg></span>
+                </button>
+              </th>
+              <th style="width: 120px">
+                <button class="sort-header" data-sort="value" aria-sort="none">
+                  Value
+                  <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 15l5 5 5-5M7 9l5-5 5 5"/></svg></span>
+                </button>
+              </th>
+              <th style="width: 90px">
+                <button class="sort-header" data-sort="due" aria-sort="none">
+                  Due
+                  <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 15l5 5 5-5M7 9l5-5 5 5"/></svg></span>
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="dt-body">
+            <!-- rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination">
+        <div class="pagination-info" id="dt-range">1-5 of 12</div>
+        <div class="pagination-controls">
+          <button class="pagination-btn" id="dt-prev" aria-label="Previous page" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <span class="pagination-page" id="dt-page">1 / 3</span>
+          <button class="pagination-btn" id="dt-next" aria-label="Next page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
       </div>
     </div>
   </section>
@@ -1265,6 +1498,184 @@
         if (toast) toast.style.display = 'none';
       });
     });
+
+    // ─── DataTable primitive (HTML spec) ───
+    (function initDataTable() {
+      var rows = [
+        { po: 'PO-99201', description: 'Pipe spool, 6" SA-106',         status: 'Delivered',  value: 12340, due: 'Apr 18' },
+        { po: 'PO-99214', description: 'Valve, 4" flanged',              status: 'In transit', value: 48320, due: 'Apr 21' },
+        { po: 'PO-99218', description: 'Structural beam W12x26',         status: 'Not RTS',    value: 8760,  due: 'Apr 22' },
+        { po: 'PO-99230', description: 'Cable tray 24"',                 status: 'RTS',        value: 2140,  due: 'Apr 19' },
+        { po: 'PO-99241', description: 'Flange gasket kit',              status: 'Delivered',  value: 540,   due: 'Apr 17' },
+        { po: 'PO-99244', description: 'Elbow 6" 90deg SCH40',           status: 'RTS',        value: 1890,  due: 'Apr 20' },
+        { po: 'PO-99252', description: 'Insulation blanket, 2" mineral', status: 'In transit', value: 6320,  due: 'Apr 23' },
+        { po: 'PO-99260', description: 'Anchor bolt 3/4"x12"',           status: 'Not RTS',    value: 980,   due: 'Apr 24' },
+        { po: 'PO-99271', description: 'Control panel enclosure',        status: 'Delivered',  value: 15600, due: 'Apr 16' },
+        { po: 'PO-99284', description: 'Pressure transmitter',           status: 'RTS',        value: 4820,  due: 'Apr 20' },
+        { po: 'PO-99290', description: 'Junction box NEMA 4X',           status: 'In transit', value: 760,   due: 'Apr 22' },
+        { po: 'PO-99301', description: 'Ladder cable 18" 5m',            status: 'Delivered',  value: 3440,  due: 'Apr 18' },
+      ];
+
+      var state = {
+        sortKey: 'po',
+        sortDir: 'asc',       // 'asc' | 'desc'
+        filter: '',           // '' | 'Delivered' | ... | '__empty__' | '__loading__'
+        page: 0,
+        pageSize: 5,
+      };
+
+      var STATUS_CHIP = {
+        'Delivered':  'chip-success',
+        'In transit': 'chip-info',
+        'Not RTS':    'chip-warn',
+        'RTS':        'chip-success',
+      };
+
+      var tbody = document.getElementById('dt-body');
+      var countEl = document.getElementById('dt-count');
+      var rangeEl = document.getElementById('dt-range');
+      var pageEl = document.getElementById('dt-page');
+      var prevBtn = document.getElementById('dt-prev');
+      var nextBtn = document.getElementById('dt-next');
+
+      function sortedFiltered() {
+        var data = rows.slice();
+        if (state.filter && state.filter !== '__empty__' && state.filter !== '__loading__') {
+          data = data.filter(function (r) { return r.status === state.filter; });
+        }
+        if (state.filter === '__empty__') data = [];
+        var k = state.sortKey;
+        data.sort(function (a, b) {
+          var av = a[k], bv = b[k];
+          if (typeof av === 'number') return state.sortDir === 'asc' ? av - bv : bv - av;
+          av = String(av); bv = String(bv);
+          return state.sortDir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+        });
+        return data;
+      }
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      function render() {
+        var data = sortedFiltered();
+        var totalPages = Math.max(1, Math.ceil(data.length / state.pageSize));
+        if (state.page >= totalPages) state.page = totalPages - 1;
+
+        if (state.filter === '__loading__') {
+          // Skeleton: pageSize shimmer rows
+          var skeletonRows = '';
+          for (var i = 0; i < state.pageSize; i++) {
+            skeletonRows += (
+              '<tr class="datatable-skeleton-row">' +
+              '<td><div class="skeleton-bar sm"></div></td>' +
+              '<td><div class="skeleton-bar lg"></div></td>' +
+              '<td><div class="skeleton-bar md"></div></td>' +
+              '<td><div class="skeleton-bar sm"></div></td>' +
+              '<td><div class="skeleton-bar sm"></div></td>' +
+              '</tr>'
+            );
+          }
+          tbody.innerHTML = skeletonRows;
+          countEl.textContent = 'Loading…';
+          rangeEl.textContent = '–';
+          pageEl.textContent = '–';
+          prevBtn.disabled = true;
+          nextBtn.disabled = true;
+          return;
+        }
+
+        if (data.length === 0) {
+          tbody.innerHTML = (
+            '<tr><td colspan="5">' +
+            '<div class="datatable-empty">' +
+            '<span class="icon">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>' +
+            '</span>' +
+            '<div class="title">No purchase orders match</div>' +
+            '<div class="caption">Try a different status filter or clear the filter to see all 12 rows.</div>' +
+            '</div>' +
+            '</td></tr>'
+          );
+          countEl.textContent = 'Showing 0 of ' + rows.length;
+          rangeEl.textContent = '0-0 of 0';
+          pageEl.textContent = '1 / 1';
+          prevBtn.disabled = true;
+          nextBtn.disabled = true;
+          return;
+        }
+
+        var start = state.page * state.pageSize;
+        var page = data.slice(start, start + state.pageSize);
+
+        tbody.innerHTML = page.map(function (r) {
+          return (
+            '<tr>' +
+            '<td class="po">' + escapeHtml(r.po) + '</td>' +
+            '<td>' + escapeHtml(r.description) + '</td>' +
+            '<td><span class="chip ' + STATUS_CHIP[r.status] + '">' + escapeHtml(r.status) + '</span></td>' +
+            '<td style="font-variant-numeric: tabular-nums;">$' + r.value.toLocaleString() + '</td>' +
+            '<td class="due">' + escapeHtml(r.due) + '</td>' +
+            '</tr>'
+          );
+        }).join('');
+
+        countEl.textContent = 'Showing ' + data.length + ' of ' + rows.length;
+        rangeEl.textContent = (start + 1) + '-' + Math.min(start + state.pageSize, data.length) + ' of ' + data.length;
+        pageEl.textContent = (state.page + 1) + ' / ' + totalPages;
+        prevBtn.disabled = state.page === 0;
+        nextBtn.disabled = state.page >= totalPages - 1;
+      }
+
+      // Sort headers
+      document.querySelectorAll('#dt-table .sort-header').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var key = b.getAttribute('data-sort');
+          if (state.sortKey === key) {
+            state.sortDir = state.sortDir === 'asc' ? 'desc' : 'asc';
+          } else {
+            state.sortKey = key;
+            state.sortDir = 'asc';
+          }
+          document.querySelectorAll('#dt-table .sort-header').forEach(function (h) {
+            h.classList.remove('active');
+            h.setAttribute('aria-sort', 'none');
+          });
+          b.classList.add('active');
+          b.setAttribute('aria-sort', state.sortDir === 'asc' ? 'ascending' : 'descending');
+          render();
+        });
+      });
+
+      // Filter chips
+      document.querySelectorAll('#datatable .filter-chip').forEach(function (b) {
+        b.addEventListener('click', function () {
+          document.querySelectorAll('#datatable .filter-chip').forEach(function (x) {
+            x.classList.remove('active');
+            x.setAttribute('aria-selected', 'false');
+          });
+          b.classList.add('active');
+          b.setAttribute('aria-selected', 'true');
+          state.filter = b.getAttribute('data-filter') || '';
+          state.page = 0;
+          render();
+        });
+      });
+
+      // Pagination
+      prevBtn.addEventListener('click', function () {
+        if (state.page > 0) { state.page -= 1; render(); }
+      });
+      nextBtn.addEventListener('click', function () {
+        var total = Math.ceil(sortedFiltered().length / state.pageSize);
+        if (state.page < total - 1) { state.page += 1; render(); }
+      });
+
+      render();
+    })();
 
     // Density toggle
     var densityButtons = document.querySelectorAll('.density-toggle button');

@@ -1,5 +1,53 @@
 # Changelog — Invenio Design System
 
+<!-- v0.5.0 — DataTable primitive -->
+
+## [0.5.0] — 2026-04-21
+
+### Added — DataTable primitive
+Closes the reviewer's last open P1 item. Dense-data primitive for the MSR dashboard surface. Specified in `docs/prototype.html` (Section 08) with a live example you can click through; parallel implementation in `components/ui/DataTable.tsx` for React Native.
+
+**Features:**
+- **Sortable headers** with `aria-sort="ascending"/"descending"/"none"` (web) + `accessibilityState.selected` (RN). Click a sortable column to toggle `asc → desc → asc`. Active column's icon highlights in brand primary.
+- **Filter chips** — horizontal row of single-select filters above the header. Uses `role="tablist"` / `role="tab"` + `aria-selected`.
+- **Sticky header** — `position: sticky` inside a scrollable container (web); RN gets this via `ScrollView` layout.
+- **Pagination** — previous/next buttons with aria-labels, disabled when at bounds. Shows `1-5 of 12` range + `page 1 / 3`.
+- **Skeleton loading** — shimmer rows via CSS gradient animation (web) / flat fill (RN). Honors `prefers-reduced-motion`.
+- **Empty-filter state** — custom illustration + title + caption when filters eliminate all rows. Separate from "no data" initial empty.
+
+**RN API shape:**
+```tsx
+<DataTable
+  columns={[
+    { key: 'po', header: 'PO', width: 120, sortable: true },
+    { key: 'status', header: 'Status', sortable: true, render: row => <Chip>{row.status}</Chip> },
+    { key: 'value', header: 'Value', align: 'right', render: row => <MoneyCell amount={row.value} /> },
+  ]}
+  data={rows}
+  rowKey={r => r.po}
+  sortBy={{ key: 'po', dir: 'asc' }}
+  onSort={(key, dir) => setSort({ key, dir })}
+  filters={[{ label: 'All', value: '' }, { label: 'Delivered', value: 'Delivered' }]}
+  activeFilter={filter}
+  onFilterChange={setFilter}
+  pagination={{ page, pageSize: 10, total, onPageChange: setPage }}
+  loading={isLoading}
+  emptyState={{ title: 'No POs match', caption: 'Try clearing the filter.' }}
+  onRowPress={row => navigate(row)}
+/>
+```
+
+Every axis is **controlled** — consumers hold state and the table reports intent via callbacks. This mirrors Polaris IndexTable / React-Admin patterns and wires cleanly to server-side data sources (Supabase, TanStack Query).
+
+### Changed
+- `docs/prototype.html` — nav gains a "Table" link; Section 08 inserted between Primitives and Dark theme.
+- `components/ui/index.ts` — barrel re-exports `DataTable`, `DataTableColumn`, `DataTableFilter`, `DataTablePagination`, `SortDir`.
+
+### Status
+This closes the final actionable item from the senior-design-reviewer's second audit. All three P0 + three P1 items from that review are now shipped.
+
+---
+
 <!-- v0.4.0 — RN primitive parity + modal focus trap -->
 
 ## [0.4.0] — 2026-04-21

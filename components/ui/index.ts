@@ -11,6 +11,13 @@
 export { Button } from './Button';
 export { Card } from './Card';
 export { Checkbox } from './Checkbox';
+export {
+  DataTable,
+  type DataTableColumn,
+  type DataTableFilter,
+  type DataTablePagination,
+  type SortDir,
+} from './DataTable';
 export { AppErrorBoundary } from './ErrorBoundary';
 export { Input } from './Input';
 export { LoadingScreen } from './LoadingScreen';
