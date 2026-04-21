@@ -3,6 +3,7 @@ import { ScrollView, Text, StyleSheet } from 'react-native';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useReceivingStore } from '@/stores/receivingStore';
+import { colors } from '@/lib/design/tokens';
 
 interface Props {
   onNext: () => void;
@@ -48,7 +49,7 @@ export function POStep({ onNext, onBack }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: colors.canvas },
   content: { padding: 20, paddingBottom: 40 },
-  title: { fontSize: 20, fontWeight: '600', color: '#1E293B', marginBottom: 16 },
+  title: { fontSize: 20, fontWeight: '600', color: colors.textPrimary, marginBottom: 16 },
 });

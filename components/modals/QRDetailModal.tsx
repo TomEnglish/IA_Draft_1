@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/Button';
 import type { QRCodeRecord } from '@/lib/api/qrcodes';
 import { Modal, StyleSheet, Text, View } from 'react-native';
+import { colors } from '@/lib/design/tokens';
 
 interface QRDetailModalProps {
     visible: boolean;
@@ -72,20 +73,20 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     modalContent: {
-        backgroundColor: '#fff',
+        backgroundColor: colors.surface,
         borderRadius: 12,
         padding: 20,
     },
     modalTitle: {
         fontSize: 18,
         fontWeight: '600',
-        color: '#1E293B',
+        color: colors.textPrimary,
         marginBottom: 16,
     },
     sectionLabel: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#1E293B',
+        color: colors.textPrimary,
         marginTop: 12,
         marginBottom: 4,
     },
@@ -94,8 +95,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingVertical: 6,
         borderBottomWidth: 1,
-        borderBottomColor: '#F1F5F9',
+        borderBottomColor: colors.raised,
     },
-    detailLabel: { fontSize: 13, color: '#64748B' },
-    detailValue: { fontSize: 13, color: '#1E293B', fontWeight: '500' },
+    detailLabel: { fontSize: 13, color: colors.textMuted },
+    detailValue: { fontSize: 13, color: colors.textPrimary, fontWeight: '500' },
 });

@@ -3,13 +3,14 @@ import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import { Button } from '@/components/ui/Button';
 import { useReceivingStore } from '@/stores/receivingStore';
 import type { ExceptionType } from '@/types/database';
+import { colors } from '@/lib/design/tokens';
 
 type DecisionStatus = 'accepted' | 'partially_accepted' | 'rejected';
 
 const STATUSES: { value: DecisionStatus; label: string; color: string }[] = [
-  { value: 'accepted', label: 'Accept', color: '#16A34A' },
-  { value: 'partially_accepted', label: 'Partial Accept', color: '#D97706' },
-  { value: 'rejected', label: 'Reject', color: '#DC2626' },
+  { value: 'accepted', label: 'Accept', color: colors.success },
+  { value: 'partially_accepted', label: 'Partial Accept', color: colors.warn },
+  { value: 'rejected', label: 'Reject', color: colors.danger },
 ];
 
 const EXCEPTION_TYPES: { value: ExceptionType; label: string }[] = [
@@ -123,20 +124,20 @@ export function DecisionStep({ onNext, onSubmit, onBack, submitting }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: colors.canvas },
   content: { padding: 20, paddingBottom: 40 },
-  title: { fontSize: 20, fontWeight: '600', color: '#1E293B', marginBottom: 16 },
-  label: { fontSize: 14, fontWeight: '500', color: '#374151', marginBottom: 8 },
+  title: { fontSize: 20, fontWeight: '600', color: colors.textPrimary, marginBottom: 16 },
+  label: { fontSize: 14, fontWeight: '500', color: colors.textPrimary, marginBottom: 8 },
   row: { flexDirection: 'row', gap: 8, marginBottom: 16 },
   statusButton: { flex: 1, paddingVertical: 10 },
   autoAlert: {
-    backgroundColor: '#FEF3C7',
+    backgroundColor: colors.warnSoft,
     borderRadius: 8,
     padding: 12,
     marginBottom: 16,
   },
   autoAlertText: {
-    color: '#92400E',
+    color: colors.warnDeep,
     fontSize: 13,
     fontWeight: '500',
   },

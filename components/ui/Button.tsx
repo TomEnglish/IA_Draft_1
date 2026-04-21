@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.brandPrimarySoft,
     borderColor: colors.brandPrimary,
   },
-  secondaryPressed: { backgroundColor: '#CDE9FB' },
+  secondaryPressed: { backgroundColor: colors.brandPrimaryPressed },
   secondaryText: { color: colors.brandPrimary } as TextStyle,
   // Ghost
   ghost: { backgroundColor: 'transparent' },
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   ghostText: { color: colors.textMuted } as TextStyle,
   // Danger
   danger: { backgroundColor: colors.danger },
-  dangerPressed: { backgroundColor: '#B91C1C' },
+  dangerPressed: { backgroundColor: colors.dangerHover },
   dangerText: { color: colors.textInverse } as TextStyle,
   // States
   disabled: { opacity: 0.5 },

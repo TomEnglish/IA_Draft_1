@@ -18,6 +18,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import { colors } from '@/lib/design/tokens';
 
 const STATUS_FILTERS = [
   { value: '', label: 'All' },
@@ -121,11 +122,11 @@ export default function MaterialsScreen() {
 
   const statusColor = (status: string) => {
     switch (status) {
-      case 'in_yard': return '#16A34A';
-      case 'issued': return '#D97706';
-      case 'shipped': return '#2563EB';
-      case 'depleted': return '#94A3B8';
-      default: return '#64748B';
+      case 'in_yard': return colors.success;
+      case 'issued': return colors.warn;
+      case 'shipped': return colors.brandPrimary;
+      case 'depleted': return colors.textSubtle;
+      default: return colors.textMuted;
     }
   };
 
@@ -159,7 +160,7 @@ export default function MaterialsScreen() {
         <TextInput
           style={styles.searchInput}
           placeholder="Search materials..."
-          placeholderTextColor="#94A3B8"
+          placeholderTextColor={colors.textSubtle}
           value={search}
           onChangeText={setSearch}
         />
@@ -190,7 +191,7 @@ export default function MaterialsScreen() {
         ListFooterComponent={loadingMore ? <ActivityIndicator style={{ padding: 12 }} /> : null}
         ListEmptyComponent={
           <View style={styles.empty}>
-            <FontAwesome name="cubes" size={48} color="#CBD5E1" />
+            <FontAwesome name="cubes" size={48} color={colors.borderStrong} />
             <Text style={styles.emptyText}>No materials found</Text>
           </View>
         }
@@ -217,27 +218,27 @@ export default function MaterialsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: colors.canvas },
   searchBar: {
     padding: 12,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: colors.border,
   },
   searchInput: {
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.raised,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 15,
-    color: '#1E293B',
+    color: colors.textPrimary,
   },
   filterScroll: {
     flexShrink: 0,
     flexGrow: 0,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: colors.border,
   },
   filterRow: {
     flexDirection: 'row',
@@ -248,25 +249,25 @@ const styles = StyleSheet.create({
   filterButton: { flexShrink: 0, paddingVertical: 8, paddingHorizontal: 16 },
   list: { padding: 12, paddingBottom: 40 },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 10,
     padding: 14,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.border,
   },
   cardTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  cardTitle: { fontSize: 16, fontWeight: '600', color: '#1E293B' },
+  cardTitle: { fontSize: 16, fontWeight: '600', color: colors.textPrimary },
   statusBadge: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: 4 },
   statusText: { fontSize: 10, fontWeight: '700' },
   cardDetails: { flexDirection: 'row', gap: 12, marginTop: 6 },
-  detail: { fontSize: 13, color: '#64748B' },
-  location: { fontSize: 12, color: '#94A3B8', marginTop: 6 },
-  editHint: { fontSize: 11, color: '#CBD5E1', marginTop: 4, fontStyle: 'italic' },
+  detail: { fontSize: 13, color: colors.textMuted },
+  location: { fontSize: 12, color: colors.textSubtle, marginTop: 6 },
+  editHint: { fontSize: 11, color: colors.borderStrong, marginTop: 4, fontStyle: 'italic' },
   empty: { alignItems: 'center', paddingTop: 60 },
-  emptyText: { fontSize: 15, color: '#94A3B8', marginTop: 12 },
+  emptyText: { fontSize: 15, color: colors.textSubtle, marginTop: 12 },
 });

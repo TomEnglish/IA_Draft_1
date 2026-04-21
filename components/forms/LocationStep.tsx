@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/Button';
 import { useReceivingStore } from '@/stores/receivingStore';
 import { supabase } from '@/lib/supabase';
 import type { Location } from '@/types/database';
+import { colors } from '@/lib/design/tokens';
 
 interface Props {
   onNext?: () => void;
@@ -92,40 +93,40 @@ export function LocationStep({ onNext, onSubmit, onBack, submitting }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: colors.canvas },
   content: { padding: 20, paddingBottom: 40 },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  title: { fontSize: 20, fontWeight: '600', color: '#1E293B', marginBottom: 16 },
-  error: { color: '#DC2626', fontSize: 14, marginBottom: 8 },
-  hint: { fontSize: 14, color: '#94A3B8', textAlign: 'center' },
+  title: { fontSize: 20, fontWeight: '600', color: colors.textPrimary, marginBottom: 16 },
+  error: { color: colors.danger, fontSize: 14, marginBottom: 8 },
+  hint: { fontSize: 14, color: colors.textSubtle, textAlign: 'center' },
   locationCard: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 8,
     padding: 14,
     marginBottom: 8,
     borderWidth: 2,
-    borderColor: '#E2E8F0',
+    borderColor: colors.border,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   locationSelected: {
-    borderColor: '#2563EB',
-    backgroundColor: '#EFF6FF',
+    borderColor: colors.brandPrimary,
+    backgroundColor: colors.brandPrimarySoft,
   },
   locationText: {
     fontSize: 15,
-    color: '#1E293B',
+    color: colors.textPrimary,
     fontWeight: '500',
   },
   locationTextSelected: {
-    color: '#2563EB',
+    color: colors.brandPrimary,
   },
   holdBadge: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#DC2626',
-    backgroundColor: '#FEE2E2',
+    color: colors.danger,
+    backgroundColor: colors.dangerSoft,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,

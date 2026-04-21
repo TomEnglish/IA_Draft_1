@@ -36,6 +36,7 @@ export const colors = {
   // Brand
   brandPrimary: '#0369A1',   // sky-700 — primary CTA, focus ring
   brandPrimaryHover: '#075985',
+  brandPrimaryPressed: '#CDE9FB', // pressed-state fill for secondary buttons
   brandPrimarySoft: '#E0F2FE',
   brandAccent: '#0891B2',    // cyan-600 — secondary accent
   brandAccentSoft: '#CFFAFE',
@@ -46,7 +47,11 @@ export const colors = {
   warn: '#D97706',
   warnSoft: '#FEF3C7',
   danger: '#DC2626',
+  dangerHover: '#B91C1C',
   dangerSoft: '#FEE2E2',
+  dangerDeep: '#991B1B',
+  successDeep: '#166534',
+  warnDeep: '#92400E',
   info: '#7C3AED',
   infoSoft: '#EDE9FE',
 
@@ -71,6 +76,7 @@ export const colorsDark = {
 
   brandPrimary: '#22D3EE',       // cyan-400 — brighter for dark contrast
   brandPrimaryHover: '#67E8F9',
+  brandPrimaryPressed: 'rgba(34,211,238,0.28)',
   brandPrimarySoft: 'rgba(34,211,238,0.14)',
   brandAccent: '#0891B2',
   brandAccentSoft: 'rgba(8,145,178,0.18)',
@@ -80,7 +86,11 @@ export const colorsDark = {
   warn: '#F59E0B',
   warnSoft: 'rgba(245,158,11,0.15)',
   danger: '#EF4444',
+  dangerHover: '#DC2626',
   dangerSoft: 'rgba(239,68,68,0.15)',
+  dangerDeep: '#FCA5A5',
+  successDeep: '#6EE7B7',
+  warnDeep: '#FCD34D',
   info: '#8B5CF6',
   infoSoft: 'rgba(139,92,246,0.15)',
 

@@ -1,5 +1,6 @@
 import { Link, Stack } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
+import { colors } from '@/lib/design/tokens';
 
 export default function NotFoundScreen() {
   return (
@@ -21,12 +22,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.canvas,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: colors.textPrimary,
   },
   link: {
     marginTop: 15,
@@ -34,6 +35,6 @@ const styles = StyleSheet.create({
   },
   linkText: {
     fontSize: 14,
-    color: '#2563EB',
+    color: colors.brandPrimary,
   },
 });

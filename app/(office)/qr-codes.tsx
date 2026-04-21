@@ -23,6 +23,7 @@ import {
   Text,
   View
 } from 'react-native';
+import { colors } from '@/lib/design/tokens';
 
 export default function QRCodesScreen() {
   const activeProject = useAuthStore((s) => s.activeProject);
@@ -126,7 +127,7 @@ export default function QRCodesScreen() {
               .label {
                 width: 180px;
                 text-align: center;
-                border: 1px solid #ccc;
+                border: 1px solid #e2e8f0;
                 padding: 10px;
                 page-break-inside: avoid;
               }
@@ -168,7 +169,7 @@ export default function QRCodesScreen() {
         <FontAwesome
           name="qrcode"
           size={20}
-          color={item.entity_id ? '#16A34A' : '#94A3B8'}
+          color={item.entity_id ? colors.success : colors.textSubtle}
         />
         <View style={styles.cardInfo}>
           <Text style={styles.codeText}>{item.code_value}</Text>
@@ -213,7 +214,7 @@ export default function QRCodesScreen() {
         ListFooterComponent={loadingMore ? <ActivityIndicator style={{ padding: 12 }} /> : null}
         ListEmptyComponent={
           <View style={styles.empty}>
-            <FontAwesome name="qrcode" size={48} color="#CBD5E1" />
+            <FontAwesome name="qrcode" size={48} color={colors.borderStrong} />
             <Text style={styles.emptyText}>No QR codes generated yet</Text>
           </View>
         }
@@ -243,17 +244,17 @@ export default function QRCodesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: colors.canvas },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 12,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: colors.border,
   },
-  headerTitle: { fontSize: 13, color: '#64748B' },
+  headerTitle: { fontSize: 13, color: colors.textMuted },
   headerActions: { flexDirection: 'row', gap: 8 },
   headerBtn: { paddingVertical: 8, paddingHorizontal: 12 },
   list: { padding: 12, paddingBottom: 40 },
@@ -262,11 +263,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 14,
   },
-  cardUnlinked: { borderColor: '#CBD5E1', borderStyle: 'dashed' },
+  cardUnlinked: { borderColor: colors.borderStrong, borderStyle: 'dashed' },
   cardRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   cardInfo: { flex: 1 },
-  codeText: { fontSize: 14, fontWeight: '600', color: '#1E293B' },
-  statusLabel: { fontSize: 11, color: '#94A3B8', marginTop: 2 },
+  codeText: { fontSize: 14, fontWeight: '600', color: colors.textPrimary },
+  statusLabel: { fontSize: 11, color: colors.textSubtle, marginTop: 2 },
   empty: { alignItems: 'center', paddingTop: 60 },
-  emptyText: { fontSize: 15, color: '#94A3B8', marginTop: 12 },
+  emptyText: { fontSize: 15, color: colors.textSubtle, marginTop: 12 },
 });

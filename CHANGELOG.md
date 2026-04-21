@@ -1,5 +1,44 @@
 # Changelog — Invenio Design System
 
+<!-- v0.3.0 — corrections + app-wide tokenization -->
+
+## [0.3.0] — 2026-04-21
+
+### Added
+- **`scripts/lint-tokens.sh`** + `npm run tokens:lint` — fails CI if any `.tsx` under `app/` or `components/` contains a raw quoted hex literal. Lines intentionally holding hex (print-HTML template strings, data strings) can opt out with a `// tokens-lint-ignore` trailing comment.
+- **`npm run lint`** — runs both `typecheck` and `tokens:lint`.
+- Token additions in `lib/design/tokens.ts`: `brandPrimaryPressed`, `dangerHover`, `dangerDeep`, `successDeep`, `warnDeep` — plus paired dark-mode counterparts. Closes the reviewer's P2 note about `Button.tsx` still shipping two inline hex values.
+
+### Changed — **app-wide tokenization, for real this time**
+25 files across `app/(auth|field|office)/`, `app/+not-found.tsx`, `components/forms/*`, `components/modals/*`, `components/scanning/*`, `components/screens/*` were migrated from raw hex to `colors.*` imports. Drift colors normalized:
+
+| Was | Count | Now |
+|---|---|---|
+| `#2563EB` (blue-600) | 22 | `colors.brandPrimary` (`#0369A1`, sky-700) |
+| `#16A34A` (green-600) | 12 | `colors.success` (`#059669`, emerald-600) |
+| `#374151` (gray-700)  | 8 | `colors.textPrimary` |
+| `#EFF6FF` (blue-50)   | 3 | `colors.brandPrimarySoft` |
+| `#F0FDF4` / `#DCFCE7` (green-50/100) | 4 | `colors.successSoft` |
+| Various slate + semantic hex | ~180 | Corresponding `colors.*` token |
+
+Notable per-file changes:
+- **`app/(auth)/login.tsx`** — full rewrite to use tokens, the refactored `Input`'s built-in `error` prop, and `accessibilityLiveRegion`. Title switched from "QR Asset Scanner" to "Invenio"; tagline tightened. First screen paying customers see is now on-brand.
+- **`components/ui/Button.tsx`** — the two stray inline hex (`#CDE9FB`, `#B91C1C`) in pressed-state styles now use `colors.brandPrimaryPressed` and `colors.dangerHover`.
+- **`app/prototype.tsx`** — stray `'#fff'` → `tokens.color.textInverse`.
+
+### Corrected from 0.1.0
+- **"Zero raw hex literals remain in components"** was only true for `components/ui/*`. The rest of the app (forms, modals, scanning, screens, office/field routes) still shipped ~280 raw hex literals at the time of that entry. Those are closed in this release; `npm run tokens:lint` now enforces the invariant going forward.
+
+### Known open
+The senior-design-reviewer's second audit still calls out these items; they remain for follow-up releases:
+- **Modal focus trap** in `docs/prototype.html` — `aria-modal="true"` + Escape/backdrop-close exist, but Tab still escapes the dialog. (0.1.0 claim of "focus trap semantics" was aspirational.)
+- **RN primitive parity** — no `Select.tsx` / `Checkbox.tsx` / `Radio.tsx` / `Switch.tsx` / `Toast.tsx` / `Modal.tsx` under `components/ui/`. Web prototype is ahead of the RN product.
+- **DataTable primitive** for the MSR dashboard surface — sort headers, pagination, filter chips, sticky header, loading skeleton.
+
+---
+
+
+
 All notable changes to the Invenio unified design system. Scope: brand, tokens, components, and docs under `/docs/`, `/lib/design/`, `/components/ui/`, and `/assets/images/`.
 
 The app's own version (see `app.json` / `package.json`) tracks product releases separately.

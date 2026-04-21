@@ -111,7 +111,7 @@ function ColorGrid() {
             {g.swatches.map((s) => (
               <View key={s.name} style={styles.swatchCard}>
                 <View style={[styles.swatchChip, { backgroundColor: s.value }]}>
-                  <Text style={[styles.swatchHex, { color: s.onDark ? '#fff' : tokens.color.textPrimary }]}>{s.value}</Text>
+                  <Text style={[styles.swatchHex, { color: s.onDark ? tokens.color.textInverse : tokens.color.textPrimary }]}>{s.value}</Text>
                 </View>
                 <Text style={styles.swatchName}>{s.name}</Text>
               </View>
@@ -160,7 +160,7 @@ function ButtonRow() {
 function PrimaryButton({ title, onPress }: { title: string; onPress: () => void }) {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.85} style={[styles.btn, styles.btnPrimary]}>
-      <Text style={[styles.btnText, { color: '#fff' }]}>{title}</Text>
+      <Text style={[styles.btnText, { color: tokens.color.textInverse }]}>{title}</Text>
     </TouchableOpacity>
   );
 }
@@ -181,7 +181,7 @@ function GhostButton({ title, onPress }: { title: string; onPress: () => void })
 function DangerButton({ title, onPress }: { title: string; onPress: () => void }) {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.85} style={[styles.btn, styles.btnDanger]}>
-      <Text style={[styles.btnText, { color: '#fff' }]}>{title}</Text>
+      <Text style={[styles.btnText, { color: tokens.color.textInverse }]}>{title}</Text>
     </TouchableOpacity>
   );
 }

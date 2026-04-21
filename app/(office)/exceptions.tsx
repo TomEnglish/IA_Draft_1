@@ -17,6 +17,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { colors } from '@/lib/design/tokens';
 
 export default function ExceptionsScreen() {
   const user = useAuthStore((s) => s.user);
@@ -85,7 +86,7 @@ export default function ExceptionsScreen() {
             <Text style={styles.cardTitle}>{item.material_type}</Text>
             <Text style={styles.cardSubtitle}>Qty: {item.qty}</Text>
           </View>
-          <FontAwesome name={isExpanded ? 'chevron-up' : 'chevron-down'} size={14} color="#94A3B8" />
+          <FontAwesome name={isExpanded ? 'chevron-up' : 'chevron-down'} size={14} color={colors.textSubtle} />
         </View>
 
         {isExpanded && (
@@ -155,7 +156,7 @@ export default function ExceptionsScreen() {
         refreshControl={<RefreshControl refreshing={loading} onRefresh={load} />}
         ListEmptyComponent={
           <View style={styles.empty}>
-            <FontAwesome name="check-circle" size={48} color="#CBD5E1" />
+            <FontAwesome name="check-circle" size={48} color={colors.borderStrong} />
             <Text style={styles.emptyText}>
               {showResolved ? 'No exceptions found' : 'No open exceptions'}
             </Text>
@@ -176,24 +177,24 @@ function DetailRow({ label, value }: { label: string; value: string }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: colors.canvas },
   filterRow: {
     flexDirection: 'row',
     gap: 8,
     padding: 12,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: colors.border,
   },
   filterButton: { flex: 1, paddingVertical: 8 },
   list: { padding: 12, paddingBottom: 40 },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 10,
     padding: 14,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.border,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -202,33 +203,33 @@ const styles = StyleSheet.create({
   },
   cardHeaderLeft: { flex: 1 },
   badge: {
-    backgroundColor: '#FEE2E2',
+    backgroundColor: colors.dangerSoft,
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 4,
     alignSelf: 'flex-start',
     marginBottom: 4,
   },
-  badgeResolved: { backgroundColor: '#DCFCE7' },
-  badgeText: { fontSize: 10, fontWeight: '700', color: '#991B1B' },
-  cardTitle: { fontSize: 16, fontWeight: '600', color: '#1E293B' },
-  cardSubtitle: { fontSize: 13, color: '#64748B', marginTop: 2 },
-  details: { marginTop: 12, borderTopWidth: 1, borderTopColor: '#F1F5F9', paddingTop: 12 },
+  badgeResolved: { backgroundColor: colors.successSoft },
+  badgeText: { fontSize: 10, fontWeight: '700', color: colors.dangerDeep },
+  cardTitle: { fontSize: 16, fontWeight: '600', color: colors.textPrimary },
+  cardSubtitle: { fontSize: 13, color: colors.textMuted, marginTop: 2 },
+  details: { marginTop: 12, borderTopWidth: 1, borderTopColor: colors.raised, paddingTop: 12 },
   detailRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 4,
   },
-  detailLabel: { fontSize: 13, color: '#64748B' },
-  detailValue: { fontSize: 13, color: '#1E293B', fontWeight: '500', flex: 1, textAlign: 'right' },
+  detailLabel: { fontSize: 13, color: colors.textMuted },
+  detailValue: { fontSize: 13, color: colors.textPrimary, fontWeight: '500', flex: 1, textAlign: 'right' },
   actions: { flexDirection: 'row', gap: 8, marginTop: 12 },
   resolvedBanner: {
-    backgroundColor: '#F0FDF4',
+    backgroundColor: colors.successSoft,
     borderRadius: 6,
     padding: 10,
     marginTop: 12,
   },
-  resolvedText: { color: '#166534', fontSize: 13, fontWeight: '500', textAlign: 'center' },
+  resolvedText: { color: colors.successDeep, fontSize: 13, fontWeight: '500', textAlign: 'center' },
   empty: { alignItems: 'center', paddingTop: 60 },
-  emptyText: { fontSize: 15, color: '#94A3B8', marginTop: 12 },
+  emptyText: { fontSize: 15, color: colors.textSubtle, marginTop: 12 },
 });

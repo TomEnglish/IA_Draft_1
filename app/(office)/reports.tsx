@@ -14,6 +14,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { supabase } from '@/lib/supabase';
+import { colors } from '@/lib/design/tokens';
 
 interface AgingItem {
   id: string;
@@ -95,9 +96,9 @@ export default function ReportsScreen() {
   };
 
   const agingColor = (days: number) => {
-    if (days > 90) return '#DC2626';
-    if (days > 30) return '#D97706';
-    return '#16A34A';
+    if (days > 90) return colors.danger;
+    if (days > 30) return colors.warn;
+    return colors.success;
   };
 
   return (
@@ -184,14 +185,14 @@ export default function ReportsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: colors.canvas },
   content: { padding: 16, paddingBottom: 40 },
   tabRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
   exportButton: { marginBottom: 12 },
   tableHeader: {
     flexDirection: 'row',
     borderBottomWidth: 2,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: colors.border,
     paddingBottom: 8,
     marginBottom: 4,
   },
@@ -199,13 +200,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomColor: colors.raised,
   },
   tableCell: {
     flex: 1,
     fontSize: 13,
-    color: '#1E293B',
+    color: colors.textPrimary,
   },
   cellWide: { flex: 2 },
-  emptyText: { fontSize: 14, color: '#94A3B8', textAlign: 'center', paddingVertical: 12 },
+  emptyText: { fontSize: 14, color: colors.textSubtle, textAlign: 'center', paddingVertical: 12 },
 });

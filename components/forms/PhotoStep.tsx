@@ -4,6 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Button } from '@/components/ui/Button';
 import { useReceivingStore, type PhotoEntry } from '@/stores/receivingStore';
 import type { PhotoType } from '@/types/database';
+import { colors } from '@/lib/design/tokens';
 
 const PHOTO_TYPES: { value: PhotoType; label: string }[] = [
   { value: 'general', label: 'General' },
@@ -103,28 +104,28 @@ export function PhotoStep({ onNext, onBack }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: colors.canvas },
   content: { padding: 20, paddingBottom: 40 },
-  title: { fontSize: 20, fontWeight: '600', color: '#1E293B', marginBottom: 16 },
-  label: { fontSize: 14, fontWeight: '500', color: '#374151', marginBottom: 8 },
+  title: { fontSize: 20, fontWeight: '600', color: colors.textPrimary, marginBottom: 16 },
+  label: { fontSize: 14, fontWeight: '500', color: colors.textPrimary, marginBottom: 8 },
   row: { flexDirection: 'row', gap: 8, marginBottom: 16 },
   typeButton: { flex: 1, paddingVertical: 8 },
   photoGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginBottom: 8 },
   photoCard: {
     width: '47%',
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 8,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.border,
   },
   photo: { width: '100%', height: 120 },
   photoType: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.textMuted,
     textAlign: 'center',
     paddingVertical: 4,
   },
   removeButton: { paddingVertical: 6, borderRadius: 0 },
-  hint: { fontSize: 13, color: '#94A3B8', textAlign: 'center' },
+  hint: { fontSize: 13, color: colors.textSubtle, textAlign: 'center' },
 });

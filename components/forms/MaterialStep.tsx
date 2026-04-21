@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/Input';
 import { useReceivingStore } from '@/stores/receivingStore';
 import { materialStepSchema } from '@/lib/utils/validation';
 import { MATERIAL_TYPES } from '@/constants/materialTypes';
+import { colors } from '@/lib/design/tokens';
 
 interface Props {
   onNext: () => void;
@@ -95,11 +96,11 @@ export function MaterialStep({ onNext }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: colors.canvas },
   content: { padding: 20, paddingBottom: 40 },
-  title: { fontSize: 20, fontWeight: '600', color: '#1E293B', marginBottom: 16 },
-  label: { fontSize: 14, fontWeight: '500', color: '#374151', marginBottom: 8 },
+  title: { fontSize: 20, fontWeight: '600', color: colors.textPrimary, marginBottom: 16 },
+  label: { fontSize: 14, fontWeight: '500', color: colors.textPrimary, marginBottom: 8 },
   typeGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 },
   typeButton: { paddingVertical: 8, paddingHorizontal: 12 },
-  error: { color: '#DC2626', fontSize: 12, marginBottom: 8 },
+  error: { color: colors.danger, fontSize: 12, marginBottom: 8 },
 });

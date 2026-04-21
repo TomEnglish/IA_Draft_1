@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, type TextStyle } from 'react-native';
 import { router } from 'expo-router';
 import { useAuthStore } from '@/stores/authStore';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { colors, radius, space, fontSize, fontWeight, shadow } from '@/lib/design/tokens';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -39,8 +40,8 @@ export default function LoginScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.inner}>
-        <Text style={styles.title}>QR Asset Scanner</Text>
-        <Text style={styles.subtitle}>Laydown Yard Management</Text>
+        <Text style={styles.title}>Invenio</Text>
+        <Text style={styles.subtitle}>Laydown yard management</Text>
 
         <View style={styles.form}>
           <Input
@@ -50,6 +51,8 @@ export default function LoginScreen() {
             autoCapitalize="none"
             keyboardType="email-address"
             placeholder="you@company.com"
+            required
+            error={error && !email ? 'Email is required' : undefined}
           />
           <Input
             label="Password"
@@ -57,15 +60,21 @@ export default function LoginScreen() {
             onChangeText={setPassword}
             secureTextEntry
             placeholder="Enter password"
+            required
+            error={error && !password ? 'Password is required' : undefined}
           />
 
-          {error ? <Text style={styles.error}>{error}</Text> : null}
+          {error && email && password ? (
+            <Text style={styles.formError} accessibilityLiveRegion="polite">
+              {error}
+            </Text>
+          ) : null}
 
           <Button
             title="Sign In"
             onPress={handleLogin}
             loading={loading}
-            style={{ marginTop: 8 }}
+            style={{ marginTop: space[2] }}
           />
         </View>
       </View>
@@ -76,40 +85,39 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.canvas,
   },
   inner: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: space[6],
   },
   title: {
     fontSize: 28,
-    fontWeight: '700',
-    color: '#1E293B',
+    fontWeight: fontWeight.bold as TextStyle['fontWeight'],
+    color: colors.brandPrimary,
     textAlign: 'center',
+    letterSpacing: -0.5,
   },
   subtitle: {
-    fontSize: 16,
-    color: '#64748B',
+    fontSize: fontSize.md,
+    color: colors.textMuted,
     textAlign: 'center',
-    marginTop: 4,
-    marginBottom: 32,
+    marginTop: space[1],
+    marginBottom: space[8],
   },
   form: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: space[5],
+    ...shadow.sm,
   },
-  error: {
-    color: '#DC2626',
-    fontSize: 14,
+  formError: {
+    color: colors.danger,
+    fontSize: fontSize.body,
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: space[2],
   },
 });

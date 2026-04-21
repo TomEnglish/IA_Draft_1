@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Modal } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { colors } from '@/lib/design/tokens';
 
 interface QRScannerProps {
   onScan: (code: string) => void;
@@ -147,11 +148,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.canvas,
   },
   message: {
     fontSize: 16,
-    color: '#64748B',
+    color: colors.textMuted,
     textAlign: 'center',
     marginBottom: 8,
   },
@@ -168,13 +169,13 @@ const styles = StyleSheet.create({
     width: 250,
     height: 250,
     borderWidth: 2,
-    borderColor: '#fff',
+    borderColor: colors.textInverse,
     borderRadius: 12,
     backgroundColor: 'transparent',
   },
   controls: {
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
   },
   modalOverlay: {
     flex: 1,
@@ -183,14 +184,14 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 20,
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1E293B',
+    color: colors.textPrimary,
     marginBottom: 16,
   },
 });

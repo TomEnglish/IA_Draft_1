@@ -4,11 +4,12 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 import { Alert, FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { colors } from '@/lib/design/tokens';
 
 const ICONS: Record<string, { name: any; color: string; bg: string }> = {
-  receiving: { name: 'download', color: '#2563EB', bg: '#EFF6FF' },
-  transfer: { name: 'exchange', color: '#D97706', bg: '#FFFBEB' },
-  issue: { name: 'sign-out', color: '#16A34A', bg: '#F0FDF4' },
+  receiving: { name: 'download', color: colors.brandPrimary, bg: colors.brandPrimarySoft },
+  transfer: { name: 'exchange', color: colors.warn, bg: colors.warnSoft },
+  issue: { name: 'sign-out', color: colors.success, bg: colors.successSoft },
 };
 
 const PAGE_SIZE = 30;
@@ -115,7 +116,7 @@ export function ActivityScreenContent({ filterByCurrentUser }: ActivityScreenPro
         }
         ListEmptyComponent={
           <View style={styles.empty}>
-            <FontAwesome name="history" size={48} color="#CBD5E1" />
+            <FontAwesome name="history" size={48} color={colors.borderStrong} />
             <Text style={styles.emptyText}>No recent activity</Text>
           </View>
         }
@@ -125,17 +126,17 @@ export function ActivityScreenContent({ filterByCurrentUser }: ActivityScreenPro
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: colors.canvas },
   list: { padding: 12, paddingBottom: 40 },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 10,
     padding: 12,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.border,
   },
   iconCircle: {
     width: 36,
@@ -146,17 +147,17 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   cardContent: { flex: 1 },
-  cardTitle: { fontSize: 14, fontWeight: '600', color: '#1E293B' },
-  cardDetail: { fontSize: 12, color: '#64748B', marginTop: 2 },
-  time: { fontSize: 11, color: '#94A3B8' },
+  cardTitle: { fontSize: 14, fontWeight: '600', color: colors.textPrimary },
+  cardDetail: { fontSize: 12, color: colors.textMuted, marginTop: 2 },
+  time: { fontSize: 11, color: colors.textSubtle },
   loadMore: {
     padding: 12,
     alignItems: 'center',
     borderRadius: 8,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.raised,
     marginTop: 4,
   },
-  loadMoreText: { fontSize: 14, fontWeight: '500', color: '#2563EB' },
+  loadMoreText: { fontSize: 14, fontWeight: '500', color: colors.brandPrimary },
   empty: { alignItems: 'center', paddingTop: 60 },
-  emptyText: { fontSize: 15, color: '#94A3B8', marginTop: 12 },
+  emptyText: { fontSize: 15, color: colors.textSubtle, marginTop: 12 },
 });

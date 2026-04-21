@@ -12,6 +12,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Alert, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { colors } from '@/lib/design/tokens';
 
 export default function DashboardScreen() {
   const activeProject = useAuthStore((s) => s.activeProject);
@@ -58,26 +59,26 @@ export default function DashboardScreen() {
           label="In Yard"
           value={kpis?.totalInYard ?? 0}
           subvalue={`${kpis?.totalQuantityInYard ?? 0} total qty`}
-          color="#2563EB"
+          color={colors.brandPrimary}
         />
         <KPICard
           icon="list"
           label="All Materials"
           value={kpis?.totalMaterials ?? 0}
-          color="#64748B"
+          color={colors.textMuted}
         />
         <KPICard
           icon="exclamation-triangle"
           label="Open Exceptions"
           value={kpis?.openExceptions ?? 0}
-          color={kpis?.openExceptions ? '#DC2626' : '#16A34A'}
+          color={kpis?.openExceptions ? colors.danger : colors.success}
         />
         <KPICard
           icon="clock-o"
           label="Aging > 30d"
           value={kpis?.agingOver30 ?? 0}
           subvalue={`${kpis?.agingOver90 ?? 0} over 90d`}
-          color="#D97706"
+          color={colors.warn}
         />
       </View>
 
@@ -153,7 +154,7 @@ function KPICard({
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: colors.canvas },
   content: { padding: 16, paddingBottom: 40 },
   kpiGrid: {
     flexDirection: 'row',
@@ -168,12 +169,12 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   kpiValue: { fontSize: 28, fontWeight: '700', marginTop: 6 },
-  kpiLabel: { fontSize: 13, color: '#64748B', marginTop: 2 },
-  kpiSub: { fontSize: 11, color: '#94A3B8', marginTop: 2 },
+  kpiLabel: { fontSize: 13, color: colors.textMuted, marginTop: 2 },
+  kpiSub: { fontSize: 11, color: colors.textSubtle, marginTop: 2 },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1E293B',
+    color: colors.textPrimary,
     marginBottom: 8,
   },
   barRow: {
@@ -181,40 +182,40 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 6,
   },
-  barLabel: { width: 100, fontSize: 13, color: '#374151' },
+  barLabel: { width: 100, fontSize: 13, color: colors.textPrimary },
   barTrack: {
     flex: 1,
     height: 16,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.raised,
     borderRadius: 4,
     marginHorizontal: 8,
     overflow: 'hidden',
   },
   barFill: {
     height: '100%',
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.brandPrimary,
     borderRadius: 4,
   },
-  barValue: { width: 30, fontSize: 13, color: '#1E293B', fontWeight: '600', textAlign: 'right' },
+  barValue: { width: 30, fontSize: 13, color: colors.textPrimary, fontWeight: '600', textAlign: 'right' },
   locationRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomColor: colors.raised,
   },
   locationInfo: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  locationName: { fontSize: 14, color: '#1E293B', fontWeight: '500' },
+  locationName: { fontSize: 14, color: colors.textPrimary, fontWeight: '500' },
   holdBadge: {
     fontSize: 9,
     fontWeight: '700',
-    color: '#DC2626',
-    backgroundColor: '#FEE2E2',
+    color: colors.danger,
+    backgroundColor: colors.dangerSoft,
     paddingHorizontal: 5,
     paddingVertical: 1,
     borderRadius: 3,
   },
-  locationCount: { fontSize: 13, color: '#64748B' },
-  emptyText: { fontSize: 14, color: '#94A3B8', textAlign: 'center', paddingVertical: 12 },
+  locationCount: { fontSize: 13, color: colors.textMuted },
+  emptyText: { fontSize: 14, color: colors.textSubtle, textAlign: 'center', paddingVertical: 12 },
 });

@@ -17,6 +17,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { colors } from '@/lib/design/tokens';
 
 // ---------------------------------------------------------------------------
 // Table configurations
@@ -290,28 +291,28 @@ const TABLE_CONFIGS: TableConfig[] = [
 // ---------------------------------------------------------------------------
 
 const ENUM_COLORS: Record<string, string> = {
-  in_yard: '#16A34A',
-  issued: '#D97706',
-  shipped: '#2563EB',
-  depleted: '#94A3B8',
-  pending: '#D97706',
-  inspecting: '#2563EB',
-  completed: '#16A34A',
-  rejected: '#DC2626',
-  draft: '#94A3B8',
-  submitted: '#D97706',
-  acknowledged: '#2563EB',
-  received: '#16A34A',
-  closed: '#64748B',
-  in_transit: '#2563EB',
-  delivered: '#16A34A',
-  not_started: '#94A3B8',
-  in_progress: '#D97706',
-  on_hold: '#DC2626',
+  in_yard: colors.success,
+  issued: colors.warn,
+  shipped: colors.brandPrimary,
+  depleted: colors.textSubtle,
+  pending: colors.warn,
+  inspecting: colors.brandPrimary,
+  completed: colors.success,
+  rejected: colors.danger,
+  draft: colors.textSubtle,
+  submitted: colors.warn,
+  acknowledged: colors.brandPrimary,
+  received: colors.success,
+  closed: colors.textMuted,
+  in_transit: colors.brandPrimary,
+  delivered: colors.success,
+  not_started: colors.textSubtle,
+  in_progress: colors.warn,
+  on_hold: colors.danger,
 };
 
 function badgeColor(value: string): string {
-  return ENUM_COLORS[value] ?? '#64748B';
+  return ENUM_COLORS[value] ?? colors.textMuted;
 }
 
 function formatValue(value: any, type: string): string {
@@ -479,8 +480,8 @@ export function AdminScreen() {
                 </Text>
               </View>
             ) : isBool ? (
-              <View style={[styles.statusBadge, { backgroundColor: value ? '#16A34A20' : '#94A3B820' }]}>
-                <Text style={[styles.statusText, { color: value ? '#16A34A' : '#94A3B8' }]}>
+              <View style={[styles.statusBadge, { backgroundColor: value ? colors.successSoft : colors.raised }]}>
+                <Text style={[styles.statusText, { color: value ? colors.success : colors.textSubtle }]}>
                   {value ? 'YES' : 'NO'}
                 </Text>
               </View>
@@ -503,7 +504,7 @@ export function AdminScreen() {
         <TextInput
           style={styles.searchInput}
           placeholder={`Search ${selectedTable.label}...`}
-          placeholderTextColor="#94A3B8"
+          placeholderTextColor={colors.textSubtle}
           value={search}
           onChangeText={setSearch}
         />
@@ -527,7 +528,7 @@ export function AdminScreen() {
       {/* Add button */}
       {selectedTable.canInsert && (
         <TouchableOpacity style={styles.addBar} onPress={openNew} activeOpacity={0.7}>
-          <FontAwesome name="plus-circle" size={18} color="#2563EB" />
+          <FontAwesome name="plus-circle" size={18} color={colors.brandPrimary} />
           <Text style={styles.addText}>Add {selectedTable.label} record</Text>
         </TouchableOpacity>
       )}
@@ -544,7 +545,7 @@ export function AdminScreen() {
         ListFooterComponent={loadingMore ? <ActivityIndicator style={{ padding: 12 }} /> : null}
         ListEmptyComponent={
           <View style={styles.empty}>
-            <FontAwesome name="database" size={48} color="#CBD5E1" />
+            <FontAwesome name="database" size={48} color={colors.borderStrong} />
             <Text style={styles.emptyText}>No records found</Text>
           </View>
         }
@@ -572,27 +573,27 @@ export function AdminScreen() {
 // ---------------------------------------------------------------------------
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: colors.canvas },
   searchBar: {
     padding: 12,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: colors.border,
   },
   searchInput: {
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.raised,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 15,
-    color: '#1E293B',
+    color: colors.textPrimary,
   },
   filterScroll: {
     flexShrink: 0,
     flexGrow: 0,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: colors.border,
   },
   filterRow: {
     flexDirection: 'row',
@@ -607,19 +608,19 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: colors.border,
   },
-  addText: { fontSize: 14, fontWeight: '600', color: '#2563EB' },
+  addText: { fontSize: 14, fontWeight: '600', color: colors.brandPrimary },
   list: { padding: 12, paddingBottom: 40 },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 10,
     padding: 14,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.border,
   },
   cardRow: {
     flexDirection: 'row',
@@ -627,11 +628,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 3,
   },
-  cardLabel: { fontSize: 12, color: '#64748B', fontWeight: '500', flex: 1 },
-  cardValue: { fontSize: 13, color: '#1E293B', flex: 2, textAlign: 'right' },
+  cardLabel: { fontSize: 12, color: colors.textMuted, fontWeight: '500', flex: 1 },
+  cardValue: { fontSize: 13, color: colors.textPrimary, flex: 2, textAlign: 'right' },
   statusBadge: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: 4 },
   statusText: { fontSize: 10, fontWeight: '700' },
-  editHint: { fontSize: 11, color: '#CBD5E1', marginTop: 4, fontStyle: 'italic' },
+  editHint: { fontSize: 11, color: colors.borderStrong, marginTop: 4, fontStyle: 'italic' },
   empty: { alignItems: 'center', paddingTop: 60 },
-  emptyText: { fontSize: 15, color: '#94A3B8', marginTop: 12 },
+  emptyText: { fontSize: 15, color: colors.textSubtle, marginTop: 12 },
 });

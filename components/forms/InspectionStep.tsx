@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useReceivingStore } from '@/stores/receivingStore';
 import type { MaterialCondition } from '@/types/database';
+import { colors } from '@/lib/design/tokens';
 
 const CONDITIONS: { value: MaterialCondition; label: string }[] = [
   { value: 'good', label: 'Good' },
@@ -84,10 +85,10 @@ export function InspectionStep({ onNext, onBack }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: colors.canvas },
   content: { padding: 20, paddingBottom: 40 },
-  title: { fontSize: 20, fontWeight: '600', color: '#1E293B', marginBottom: 16 },
-  label: { fontSize: 14, fontWeight: '500', color: '#374151', marginBottom: 8 },
+  title: { fontSize: 20, fontWeight: '600', color: colors.textPrimary, marginBottom: 16 },
+  label: { fontSize: 14, fontWeight: '500', color: colors.textPrimary, marginBottom: 8 },
   row: { flexDirection: 'row', gap: 8, marginBottom: 16 },
   conditionButton: { flex: 1, paddingVertical: 10, paddingHorizontal: 8 },
 });

@@ -15,6 +15,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import { colors } from '@/lib/design/tokens';
 
 export default function LocationsScreen() {
   const activeProject = useAuthStore((s) => s.activeProject);
@@ -110,7 +111,7 @@ export default function LocationsScreen() {
         refreshControl={<RefreshControl refreshing={loading} onRefresh={load} />}
         ListEmptyComponent={
           <View style={styles.empty}>
-            <FontAwesome name="map-marker" size={48} color="#CBD5E1" />
+            <FontAwesome name="map-marker" size={48} color={colors.borderStrong} />
             <Text style={styles.emptyText}>No locations configured</Text>
           </View>
         }
@@ -157,53 +158,53 @@ export default function LocationsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: colors.canvas },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 12,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: colors.border,
   },
-  headerTitle: { fontSize: 15, color: '#64748B' },
+  headerTitle: { fontSize: 15, color: colors.textMuted },
   addButton: { paddingVertical: 8, paddingHorizontal: 16 },
   list: { padding: 12, paddingBottom: 40 },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 10,
     padding: 14,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: colors.border,
   },
   cardTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  cardTitle: { fontSize: 15, fontWeight: '600', color: '#1E293B' },
+  cardTitle: { fontSize: 15, fontWeight: '600', color: colors.textPrimary },
   holdBadge: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#DC2626',
-    backgroundColor: '#FEE2E2',
+    color: colors.danger,
+    backgroundColor: colors.dangerSoft,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
   },
-  cardDetail: { fontSize: 13, color: '#64748B', marginTop: 4 },
+  cardDetail: { fontSize: 13, color: colors.textMuted, marginTop: 4 },
   empty: { alignItems: 'center', paddingTop: 60 },
-  emptyText: { fontSize: 15, color: '#94A3B8', marginTop: 12 },
+  emptyText: { fontSize: 15, color: colors.textSubtle, marginTop: 12 },
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
     padding: 20,
   },
-  modalContent: { backgroundColor: '#fff', borderRadius: 12, padding: 20 },
-  modalTitle: { fontSize: 18, fontWeight: '600', color: '#1E293B', marginBottom: 16 },
-  label: { fontSize: 14, fontWeight: '500', color: '#374151', marginBottom: 8 },
+  modalContent: { backgroundColor: colors.surface, borderRadius: 12, padding: 20 },
+  modalTitle: { fontSize: 18, fontWeight: '600', color: colors.textPrimary, marginBottom: 16 },
+  label: { fontSize: 14, fontWeight: '500', color: colors.textPrimary, marginBottom: 8 },
   toggleRow: { flexDirection: 'row', gap: 8, marginBottom: 8 },
 });

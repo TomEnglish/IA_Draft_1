@@ -12,6 +12,7 @@ import { InspectionStep } from '@/components/forms/InspectionStep';
 import { PhotoStep } from '@/components/forms/PhotoStep';
 import { LocationStep } from '@/components/forms/LocationStep';
 import { DecisionStep } from '@/components/forms/DecisionStep';
+import { colors } from '@/lib/design/tokens';
 
 const STEP_TITLES = [
   'Material Details',
@@ -118,31 +119,31 @@ export function ReceivingScreenContent() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.canvas,
   },
   stepBar: {
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 6,
     paddingVertical: 12,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: colors.border,
   },
   stepDot: {
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: colors.border,
   },
   stepDotActive: {
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.brandPrimary,
   },
   qrLabel: {
     fontSize: 12,
-    color: '#94A3B8',
+    color: colors.textSubtle,
     textAlign: 'center',
     paddingVertical: 6,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
   },
 });

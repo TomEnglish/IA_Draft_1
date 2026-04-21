@@ -6,6 +6,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs, router } from 'expo-router';
 import { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '@/lib/design/tokens';
 
 export default function OfficeLayout() {
   const user = useAuthStore((s) => s.user);
@@ -23,9 +24,9 @@ export default function OfficeLayout() {
       <OfflineIndicator />
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: '#2563EB',
-          tabBarInactiveTintColor: '#94A3B8',
-          headerStyle: { backgroundColor: '#fff' },
+          tabBarActiveTintColor: colors.brandPrimary,
+          tabBarInactiveTintColor: colors.textSubtle,
+          headerStyle: { backgroundColor: colors.surface },
           headerTitleStyle: { fontWeight: '600' },
           headerRight: () => (
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>

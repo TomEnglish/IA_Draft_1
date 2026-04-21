@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useState, useEffect } from 'react';
 import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { colors } from '@/lib/design/tokens';
 
 export interface ColumnConfig {
   key: string;
@@ -177,7 +178,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 20,
     maxHeight: '85%',
@@ -185,7 +186,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1E293B',
+    color: colors.textPrimary,
     marginBottom: 16,
   },
   scrollArea: {
@@ -197,7 +198,7 @@ const styles = StyleSheet.create({
   fieldLabel: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#374151',
+    color: colors.textPrimary,
     marginBottom: 6,
   },
   enumRow: {
@@ -209,13 +210,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 6,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: colors.raised,
     borderWidth: 1,
-    borderColor: '#CBD5E1',
+    borderColor: colors.borderStrong,
   },
   enumButtonActive: {
-    backgroundColor: '#2563EB',
-    borderColor: '#2563EB',
+    backgroundColor: colors.brandPrimary,
+    borderColor: colors.brandPrimary,
   },
   enumButtonDisabled: {
     opacity: 0.5,
@@ -223,9 +224,9 @@ const styles = StyleSheet.create({
   enumText: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#1E293B',
+    color: colors.textPrimary,
   },
   enumTextActive: {
-    color: '#fff',
+    color: colors.textInverse,
   },
 });
