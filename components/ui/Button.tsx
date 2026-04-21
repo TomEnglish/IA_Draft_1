@@ -1,18 +1,25 @@
+import { useState } from 'react';
 import {
-  TouchableOpacity,
+  Platform,
+  Pressable,
   Text,
   StyleSheet,
   ActivityIndicator,
   type ViewStyle,
+  type TextStyle,
 } from 'react-native';
+import { colors, radius, fontSize, fontWeight, touchTarget, ring } from '@/lib/design/tokens';
+
+type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 
 interface ButtonProps {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary' | 'danger';
+  variant?: Variant;
   loading?: boolean;
   disabled?: boolean;
   style?: ViewStyle;
+  accessibilityLabel?: string;
 }
 
 export function Button({
@@ -22,60 +29,85 @@ export function Button({
   loading = false,
   disabled = false,
   style,
+  accessibilityLabel,
 }: ButtonProps) {
+  const [focused, setFocused] = useState(false);
   const isDisabled = disabled || loading;
+  const spinnerColor =
+    variant === 'secondary' || variant === 'ghost' ? colors.brandPrimary : colors.textInverse;
 
   return (
-    <TouchableOpacity
-      style={[
-        styles.base,
-        styles[variant],
-        isDisabled && styles.disabled,
-        style,
-      ]}
+    <Pressable
       onPress={onPress}
       disabled={isDisabled}
-      activeOpacity={0.7}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel ?? title}
+      accessibilityState={{ disabled: isDisabled, busy: loading }}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
+      style={({ pressed }) => [
+        styles.base,
+        styles[variant],
+        pressed && !isDisabled && styles[`${variant}Pressed` as const],
+        isDisabled && styles.disabled,
+        focused && Platform.OS === 'web' && styles.focusRing,
+        style,
+      ]}
     >
       {loading ? (
-        <ActivityIndicator color="#fff" />
+        <ActivityIndicator color={spinnerColor} />
       ) : (
-        <Text style={[styles.text, variant === 'secondary' && styles.secondaryText]}>
-          {title}
-        </Text>
+        <Text style={[styles.textBase, styles[`${variant}Text` as const]]}>{title}</Text>
       )}
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 
+const webFocusRing: ViewStyle =
+  Platform.OS === 'web'
+    ? ({
+        outlineStyle: 'solid',
+        outlineColor: ring.color,
+        outlineWidth: ring.width,
+        outlineOffset: ring.offset,
+      } as unknown as ViewStyle)
+    : {};
+
 const styles = StyleSheet.create({
   base: {
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 8,
+    minHeight: touchTarget,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  primary: {
-    backgroundColor: '#2563EB',
-  },
-  secondary: {
-    backgroundColor: '#F1F5F9',
     borderWidth: 1,
-    borderColor: '#CBD5E1',
+    borderColor: 'transparent',
   },
-  danger: {
-    backgroundColor: '#DC2626',
+  // Primary
+  primary: { backgroundColor: colors.brandPrimary },
+  primaryPressed: { backgroundColor: colors.brandPrimaryHover },
+  primaryText: { color: colors.textInverse } as TextStyle,
+  // Secondary — tonal sky
+  secondary: {
+    backgroundColor: colors.brandPrimarySoft,
+    borderColor: colors.brandPrimary,
   },
-  disabled: {
-    opacity: 0.5,
-  },
-  text: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  secondaryText: {
-    color: '#1E293B',
+  secondaryPressed: { backgroundColor: '#CDE9FB' },
+  secondaryText: { color: colors.brandPrimary } as TextStyle,
+  // Ghost
+  ghost: { backgroundColor: 'transparent' },
+  ghostPressed: { backgroundColor: colors.raised },
+  ghostText: { color: colors.textMuted } as TextStyle,
+  // Danger
+  danger: { backgroundColor: colors.danger },
+  dangerPressed: { backgroundColor: '#B91C1C' },
+  dangerText: { color: colors.textInverse } as TextStyle,
+  // States
+  disabled: { opacity: 0.5 },
+  focusRing: webFocusRing,
+  textBase: {
+    fontSize: fontSize.md,
+    fontWeight: fontWeight.semibold as TextStyle['fontWeight'],
   },
 });

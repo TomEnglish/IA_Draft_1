@@ -1,41 +1,6 @@
-import { ScrollView, View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
-
-const tokens = {
-  color: {
-    canvas: '#F8FAFC',
-    surface: '#FFFFFF',
-    raised: '#F1F5F9',
-    textPrimary: '#1E293B',
-    textMuted: '#64748B',
-    textSubtle: '#94A3B8',
-    border: '#E2E8F0',
-    brandPrimary: '#0369A1',
-    brandPrimaryHover: '#075985',
-    brandAccent: '#0891B2',
-    brandAccentSoft: '#E0F2FE',
-    success: '#059669',
-    successSoft: '#D1FAE5',
-    warn: '#D97706',
-    warnSoft: '#FEF3C7',
-    danger: '#DC2626',
-    dangerSoft: '#FEE2E2',
-    info: '#7C3AED',
-    infoSoft: '#EDE9FE',
-  },
-  radius: { sm: 6, md: 8, lg: 12, xl: 16 },
-  space: { 1: 4, 2: 8, 3: 12, 4: 16, 6: 24, 8: 32, 12: 48 },
-  shadow: {
-    sm: Platform.select({
-      web: { boxShadow: '0 1px 2px rgba(15,23,42,0.05)' } as any,
-      default: { shadowColor: '#0F172A', shadowOpacity: 0.05, shadowRadius: 2, shadowOffset: { width: 0, height: 1 }, elevation: 1 },
-    }),
-    md: Platform.select({
-      web: { boxShadow: '0 4px 12px rgba(15,23,42,0.08)' } as any,
-      default: { shadowColor: '#0F172A', shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 3 },
-    }),
-  },
-};
+import { tokens } from '@/lib/design/tokens';
 
 export default function PrototypeScreen() {
   return (
@@ -415,7 +380,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   btnPrimary: { backgroundColor: tokens.color.brandPrimary },
-  btnSecondary: { backgroundColor: tokens.color.brandAccentSoft, borderColor: tokens.color.brandPrimary },
+  btnSecondary: { backgroundColor: tokens.color.brandPrimarySoft, borderColor: tokens.color.brandPrimary },
   btnGhost: { backgroundColor: 'transparent' },
   btnDanger: { backgroundColor: tokens.color.danger },
   btnText: { fontSize: 14, fontWeight: '600' },

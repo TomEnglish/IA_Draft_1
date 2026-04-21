@@ -1,6 +1,7 @@
 import { Component, type ReactNode } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, type TextStyle } from 'react-native';
 import { Button } from './Button';
+import { colors, space, fontSize, fontWeight } from '@/lib/design/tokens';
 
 interface Props {
   children: ReactNode;
@@ -25,7 +26,7 @@ export class AppErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <View style={styles.container}>
+        <View style={styles.container} accessibilityRole="alert">
           <Text style={styles.title}>Something went wrong</Text>
           <Text style={styles.message}>
             {this.state.error?.message ?? 'An unexpected error occurred'}
@@ -43,22 +44,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 24,
-    backgroundColor: '#F8FAFC',
+    padding: space[6],
+    backgroundColor: colors.canvas,
   },
   title: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1E293B',
-    marginBottom: 8,
+    fontSize: fontSize.lg,
+    fontWeight: fontWeight.bold as TextStyle['fontWeight'],
+    color: colors.textPrimary,
+    marginBottom: space[2],
   },
   message: {
-    fontSize: 14,
-    color: '#64748B',
+    fontSize: fontSize.body,
+    color: colors.textMuted,
     textAlign: 'center',
-    marginBottom: 24,
+    marginBottom: space[6],
   },
   button: {
-    paddingHorizontal: 32,
+    paddingHorizontal: space[8],
   },
 });

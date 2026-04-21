@@ -1,4 +1,5 @@
-import { View, ActivityIndicator, Text, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, Text, StyleSheet, type TextStyle } from 'react-native';
+import { colors, fontSize, fontWeight, space } from '@/lib/design/tokens';
 
 interface Props {
   message?: string;
@@ -6,8 +7,8 @@ interface Props {
 
 export function LoadingScreen({ message = 'Loading...' }: Props) {
   return (
-    <View style={styles.container}>
-      <ActivityIndicator size="large" color="#2563EB" />
+    <View style={styles.container} accessibilityRole="progressbar" accessibilityLabel={message}>
+      <ActivityIndicator size="large" color={colors.brandPrimary} />
       <Text style={styles.text}>{message}</Text>
     </View>
   );
@@ -18,11 +19,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.canvas,
   },
   text: {
-    fontSize: 14,
-    color: '#94A3B8',
-    marginTop: 12,
+    fontSize: fontSize.body,
+    fontWeight: fontWeight.medium as TextStyle['fontWeight'],
+    color: colors.textMuted,
+    marginTop: space[3],
   },
 });

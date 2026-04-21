@@ -2,6 +2,7 @@ import { Pressable, Alert } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { router } from 'expo-router';
 import { useAuthStore } from '@/stores/authStore';
+import { colors, space } from '@/lib/design/tokens';
 
 export function SignOutButton() {
   const signOut = useAuthStore((s) => s.signOut);
@@ -21,12 +22,17 @@ export function SignOutButton() {
   };
 
   return (
-    <Pressable onPress={handleSignOut} style={{ marginRight: 15 }}>
+    <Pressable
+      onPress={handleSignOut}
+      style={{ marginRight: space[4] - 1, padding: space[2] }}
+      accessibilityRole="button"
+      accessibilityLabel="Sign out"
+    >
       {({ pressed }) => (
         <FontAwesome
           name="sign-out"
           size={22}
-          color="#64748B"
+          color={colors.textMuted}
           style={{ opacity: pressed ? 0.5 : 1 }}
         />
       )}

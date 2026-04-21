@@ -1,8 +1,9 @@
 import { useState, useCallback } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, type TextStyle } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { useNetworkStore } from '@/lib/sync/networkStore';
 import { getQueueStats } from '@/lib/sync/offlineQueue';
+import { colors, fontSize, fontWeight, space } from '@/lib/design/tokens';
 
 export function OfflineIndicator() {
   const isOnline = useNetworkStore((s) => s.isOnline);
@@ -19,21 +20,22 @@ export function OfflineIndicator() {
   return (
     <View>
       {!isOnline && (
-        <View style={styles.banner}>
+        <View style={[styles.banner, styles.bannerWarn]}>
           <Text style={styles.text}>
-            You are offline — {stats.pending > 0 ? `${stats.pending} pending` : 'changes will sync when reconnected'}
+            You are offline —{' '}
+            {stats.pending > 0 ? `${stats.pending} pending` : 'changes will sync when reconnected'}
           </Text>
         </View>
       )}
       {isOnline && stats.pending > 0 && (
-        <View style={styles.pendingBanner}>
+        <View style={[styles.banner, styles.bannerInfo]}>
           <Text style={styles.text}>
             {stats.pending} queued action{stats.pending > 1 ? 's' : ''} syncing...
           </Text>
         </View>
       )}
       {stats.deadLetters > 0 && (
-        <View style={styles.errorBanner}>
+        <View style={[styles.banner, styles.bannerDanger]}>
           <Text style={styles.text}>
             {stats.deadLetters} queued action{stats.deadLetters > 1 ? 's' : ''} failed after multiple retries
           </Text>
@@ -45,26 +47,16 @@ export function OfflineIndicator() {
 
 const styles = StyleSheet.create({
   banner: {
-    backgroundColor: '#F59E0B',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    paddingVertical: space[2] - 2,
+    paddingHorizontal: space[3],
     alignItems: 'center',
   },
-  pendingBanner: {
-    backgroundColor: '#3B82F6',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    alignItems: 'center',
-  },
-  errorBanner: {
-    backgroundColor: '#DC2626',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    alignItems: 'center',
-  },
+  bannerWarn: { backgroundColor: colors.warn },
+  bannerInfo: { backgroundColor: colors.brandPrimary },
+  bannerDanger: { backgroundColor: colors.danger },
   text: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#fff',
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.semibold as TextStyle['fontWeight'],
+    color: colors.textInverse,
   },
 });
