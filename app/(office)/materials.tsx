@@ -1,5 +1,5 @@
 import { EditMaterialModal } from '@/components/modals/EditMaterialModal';
-import { Button } from '@/components/ui/Button';
+import { DataTable, type DataTableColumn } from '@/components/ui/DataTable';
 import { fetchMaterials, type MaterialWithLocation } from '@/lib/api/materials';
 import { getProjectClient } from '@/lib/supabaseProject';
 import { useAuthStore } from '@/stores/authStore';
@@ -9,24 +9,44 @@ import { useCallback, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  FlatList,
   RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
-  View
+  View,
+  type TextStyle,
 } from 'react-native';
-import { colors } from '@/lib/design/tokens';
+import { colors, radius, space, fontSize, fontWeight, tint } from '@/lib/design/tokens';
 
 const STATUS_FILTERS = [
-  { value: '', label: 'All' },
-  { value: 'in_yard', label: 'In Yard' },
-  { value: 'issued', label: 'Issued' },
-  { value: 'shipped', label: 'Shipped' },
+  { value: '',         label: 'All' },
+  { value: 'in_yard',  label: 'In Yard' },
+  { value: 'issued',   label: 'Issued' },
+  { value: 'shipped',  label: 'Shipped' },
   { value: 'depleted', label: 'Depleted' },
 ];
+
+const statusColor = (status: string): string => {
+  switch (status) {
+    case 'in_yard':  return colors.success;
+    case 'issued':   return colors.warn;
+    case 'shipped':  return colors.brandPrimary;
+    case 'depleted': return colors.textSubtle;
+    default:         return colors.textMuted;
+  }
+};
+
+const StatusBadge = ({ status }: { status: string }) => {
+  const c = statusColor(status);
+  return (
+    <View style={[styles.statusBadge, { backgroundColor: tint(c, 0.12) }]}>
+      <Text style={[styles.statusText, { color: c }]}>
+        {status.replaceAll('_', ' ').toUpperCase()}
+      </Text>
+    </View>
+  );
+};
 
 export default function MaterialsScreen() {
   const activeProject = useAuthStore((s) => s.activeProject);
@@ -77,7 +97,7 @@ export default function MaterialsScreen() {
       setMaterials((prev) => [...prev, ...result.data]);
       setHasMore(result.hasMore);
       offsetRef.current += result.data.length;
-    } catch { }
+    } catch {}
     setLoadingMore(false);
   };
 
@@ -120,42 +140,60 @@ export default function MaterialsScreen() {
     setSaving(false);
   };
 
-  const statusColor = (status: string) => {
-    switch (status) {
-      case 'in_yard': return colors.success;
-      case 'issued': return colors.warn;
-      case 'shipped': return colors.brandPrimary;
-      case 'depleted': return colors.textSubtle;
-      default: return colors.textMuted;
-    }
-  };
-
-  const renderItem = ({ item }: { item: MaterialWithLocation }) => (
-    <TouchableOpacity style={styles.card} onPress={() => openEdit(item)} activeOpacity={0.7}>
-      <View style={styles.cardTop}>
-        <Text style={styles.cardTitle}>{item.material_type}</Text>
-        <View style={[styles.statusBadge, { backgroundColor: statusColor(item.status) + '20' }]}>
-          <Text style={[styles.statusText, { color: statusColor(item.status) }]}>
-            {item.status.replaceAll('_', ' ').toUpperCase()}
-          </Text>
+  // Column config — adopts the DataTable primitive (v0.6.0 reviewer asked
+  // for at least one real consumer of DataTable; this is it).
+  const columns: DataTableColumn<MaterialWithLocation>[] = [
+    {
+      key: 'material_type',
+      header: 'Material',
+      width: 180,
+      render: (m) => (
+        <View>
+          <Text style={styles.cellPrimary} numberOfLines={1}>{m.material_type}</Text>
+          {m.size || m.grade ? (
+            <Text style={styles.cellSecondary} numberOfLines={1}>
+              {[m.size, m.grade].filter(Boolean).join(' · ')}
+            </Text>
+          ) : null}
         </View>
-      </View>
-      <View style={styles.cardDetails}>
-        {item.size && <Text style={styles.detail}>Size: {item.size}</Text>}
-        {item.grade && <Text style={styles.detail}>Grade: {item.grade}</Text>}
-        <Text style={styles.detail}>Qty: {item.current_quantity}/{item.qty}</Text>
-      </View>
-      {item.location_zone && (
-        <Text style={styles.location}>
-          {item.location_zone} - Row {item.location_row}, Rack {item.location_rack}
+      ),
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      width: 130,
+      render: (m) => <StatusBadge status={m.status} />,
+    },
+    {
+      key: 'qty',
+      header: 'Qty',
+      width: 90,
+      align: 'right',
+      render: (m) => (
+        <Text style={[styles.cellPrimary, { textAlign: 'right' }]}>
+          {m.current_quantity}
+          <Text style={styles.cellSecondary}> / {m.qty}</Text>
         </Text>
-      )}
-      <Text style={styles.editHint}>Tap to edit</Text>
-    </TouchableOpacity>
-  );
+      ),
+    },
+    {
+      key: 'location',
+      header: 'Location',
+      width: 200,
+      render: (m) =>
+        m.location_zone ? (
+          <Text style={styles.cellPrimary} numberOfLines={1}>
+            {m.location_zone} · R{m.location_row}/Rk{m.location_rack}
+          </Text>
+        ) : (
+          <Text style={styles.cellSecondary}>—</Text>
+        ),
+    },
+  ];
 
   return (
     <View style={styles.container}>
+      {/* Search bar — DataTable doesn't bundle global search; this stays at the screen level */}
       <View style={styles.searchBar}>
         <TextInput
           style={styles.searchInput}
@@ -166,36 +204,50 @@ export default function MaterialsScreen() {
         />
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
-        <View style={styles.filterRow}>
-          {STATUS_FILTERS.map((f) => (
-            <Button
-              key={f.value}
-              title={f.label}
-              variant={statusFilter === f.value ? 'primary' : 'secondary'}
-              onPress={() => setStatusFilter(f.value)}
-              style={styles.filterButton}
-            />
-          ))}
-        </View>
-      </ScrollView>
-
-      <FlatList
-        data={materials}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        contentContainerStyle={styles.list}
-        refreshControl={<RefreshControl refreshing={loading} onRefresh={load} />}
-        onEndReached={loadMore}
-        onEndReachedThreshold={0.3}
-        ListFooterComponent={loadingMore ? <ActivityIndicator style={{ padding: 12 }} /> : null}
-        ListEmptyComponent={
-          <View style={styles.empty}>
-            <FontAwesome name="cubes" size={48} color={colors.borderStrong} />
-            <Text style={styles.emptyText}>No materials found</Text>
+      <ScrollView
+        style={styles.body}
+        contentContainerStyle={styles.bodyContent}
+        refreshControl={<RefreshControl refreshing={loading} onRefresh={load} tintColor={colors.brandPrimary} />}
+        onScroll={({ nativeEvent }) => {
+          const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
+          if (
+            layoutMeasurement.height + contentOffset.y >=
+            contentSize.height - 200
+          ) {
+            loadMore();
+          }
+        }}
+        scrollEventThrottle={16}
+      >
+        <DataTable
+          columns={columns}
+          data={materials}
+          rowKey={(m) => m.id}
+          loading={loading}
+          skeletonRows={6}
+          filters={STATUS_FILTERS}
+          activeFilter={statusFilter}
+          onFilterChange={setStatusFilter}
+          visibleCount={
+            materials.length
+              ? `Showing ${materials.length}${hasMore ? '+' : ''}`
+              : undefined
+          }
+          emptyState={{
+            title: 'No materials found',
+            caption: search || statusFilter
+              ? 'Try clearing the filter or search.'
+              : 'No materials in this project yet.',
+          }}
+          onRowPress={openEdit}
+        />
+        {loadingMore ? (
+          <View style={styles.loadingMore}>
+            <ActivityIndicator color={colors.brandPrimary} />
+            <Text style={styles.loadingMoreText}>Loading more…</Text>
           </View>
-        }
-      />
+        ) : null}
+      </ScrollView>
 
       <EditMaterialModal
         editItem={editItem}
@@ -220,54 +272,48 @@ export default function MaterialsScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.canvas },
   searchBar: {
-    padding: 12,
+    padding: space[3],
     backgroundColor: colors.surface,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
   searchInput: {
     backgroundColor: colors.raised,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 15,
+    borderRadius: radius.md,
+    paddingHorizontal: space[3],
+    paddingVertical: space[2] + 2,
+    fontSize: fontSize.body + 1,
     color: colors.textPrimary,
+  } as TextStyle,
+  body: { flex: 1 },
+  bodyContent: { padding: space[3], gap: space[3] },
+  cellPrimary: {
+    fontSize: fontSize.body,
+    color: colors.textPrimary,
+    fontWeight: fontWeight.medium as TextStyle['fontWeight'],
+  } as TextStyle,
+  cellSecondary: {
+    fontSize: fontSize.sm,
+    color: colors.textMuted,
+    fontWeight: fontWeight.regular as TextStyle['fontWeight'],
+  } as TextStyle,
+  statusBadge: {
+    paddingHorizontal: space[2] + 2,
+    paddingVertical: 4,
+    borderRadius: radius.sm,
+    alignSelf: 'flex-start',
   },
-  filterScroll: {
-    flexShrink: 0,
-    flexGrow: 0,
-    backgroundColor: colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  filterRow: {
+  statusText: {
+    fontSize: 10,
+    fontWeight: fontWeight.bold as TextStyle['fontWeight'],
+    letterSpacing: 0.6,
+  } as TextStyle,
+  loadingMore: {
     flexDirection: 'row',
-    gap: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  filterButton: { flexShrink: 0, paddingVertical: 8, paddingHorizontal: 16 },
-  list: { padding: 12, paddingBottom: 40 },
-  card: {
-    backgroundColor: colors.surface,
-    borderRadius: 10,
-    padding: 14,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  cardTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'center',
+    gap: space[2],
+    paddingVertical: space[4],
   },
-  cardTitle: { fontSize: 16, fontWeight: '600', color: colors.textPrimary },
-  statusBadge: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: 4 },
-  statusText: { fontSize: 10, fontWeight: '700' },
-  cardDetails: { flexDirection: 'row', gap: 12, marginTop: 6 },
-  detail: { fontSize: 13, color: colors.textMuted },
-  location: { fontSize: 12, color: colors.textSubtle, marginTop: 6 },
-  editHint: { fontSize: 11, color: colors.borderStrong, marginTop: 4, fontStyle: 'italic' },
-  empty: { alignItems: 'center', paddingTop: 60 },
-  emptyText: { fontSize: 15, color: colors.textSubtle, marginTop: 12 },
+  loadingMoreText: { fontSize: fontSize.sm, color: colors.textMuted },
 });

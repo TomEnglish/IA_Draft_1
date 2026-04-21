@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Pressable,
   View,
   Text,
+  TextInput,
   FlatList,
   StyleSheet,
   type ViewStyle,
@@ -28,13 +29,24 @@ interface SelectProps<T extends string | number> {
   error?: string;
   required?: boolean;
   disabled?: boolean;
+  /**
+   * Render a search input at the top of the option sheet. Filters options
+   * by label (case-insensitive substring match). Turn on when the list is
+   * 20+ items — vendor pickers, material types, user assignment, etc.
+   * Default: false.
+   */
+  searchable?: boolean;
+  /** Placeholder for the search input when `searchable` is true. */
+  searchPlaceholder?: string;
   style?: ViewStyle;
 }
 
 /**
  * Select — a labeled dropdown. Tap opens a Modal with the option list;
- * selecting an option closes the sheet. Matches the HTML <select>
- * pattern from prototype.html.
+ * selecting an option closes the sheet.
+ *
+ * For long lists (vendor picker, material types) pass `searchable` to
+ * render a typeahead TextInput at the top of the sheet.
  */
 export function Select<T extends string | number>({
   label,
@@ -46,8 +58,16 @@ export function Select<T extends string | number>({
   error,
   required = false,
   disabled = false,
+  searchable = false,
+  searchPlaceholder = 'Search…',
   style,
 }: SelectProps<T>) {
+  const [query, setQuery] = useState('');
+  const filteredOptions = useMemo(() => {
+    if (!searchable || !query.trim()) return options;
+    const q = query.trim().toLowerCase();
+    return options.filter((o) => o.label.toLowerCase().includes(q));
+  }, [options, query, searchable]);
   const [open, setOpen] = useState(false);
   const selected = options.find((o) => o.value === value);
 
@@ -86,11 +106,45 @@ export function Select<T extends string | number>({
 
       <Modal
         visible={open}
-        onClose={() => setOpen(false)}
+        onClose={() => {
+          setOpen(false);
+          setQuery('');
+        }}
         title={label}
       >
+        {searchable ? (
+          <View style={styles.searchWrap}>
+            <FontAwesome name="search" size={14} color={colors.textSubtle} style={styles.searchIcon} />
+            <TextInput
+              value={query}
+              onChangeText={setQuery}
+              placeholder={searchPlaceholder}
+              placeholderTextColor={colors.textSubtle}
+              style={styles.searchInput}
+              autoCorrect={false}
+              autoCapitalize="none"
+              accessibilityLabel={`Search ${label.toLowerCase()}`}
+            />
+            {query ? (
+              <Pressable
+                onPress={() => setQuery('')}
+                accessibilityRole="button"
+                accessibilityLabel="Clear search"
+                hitSlop={8}
+                style={styles.searchClear}
+              >
+                <FontAwesome name="times-circle" size={14} color={colors.textSubtle} />
+              </Pressable>
+            ) : null}
+          </View>
+        ) : null}
+        {searchable && filteredOptions.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyText}>No options match "{query}"</Text>
+          </View>
+        ) : null}
         <FlatList
-          data={options}
+          data={filteredOptions}
           keyExtractor={(item) => String(item.value)}
           renderItem={({ item }) => {
             const isActive = item.value === value;
@@ -182,4 +236,30 @@ const styles = StyleSheet.create({
   },
   optionTextDisabled: { color: colors.textSubtle },
   separator: { height: 1, backgroundColor: colors.raised },
+
+  searchWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space[2],
+    paddingHorizontal: space[3],
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    backgroundColor: colors.surface,
+    marginBottom: space[2],
+    minHeight: 40,
+  },
+  searchIcon: { opacity: 0.8 },
+  searchInput: {
+    flex: 1,
+    fontSize: fontSize.body,
+    color: colors.textPrimary,
+    paddingVertical: space[2],
+  } as TextStyle,
+  searchClear: { padding: 4 },
+  emptyState: {
+    paddingVertical: space[8],
+    alignItems: 'center',
+  },
+  emptyText: { fontSize: fontSize.sm, color: colors.textMuted },
 });

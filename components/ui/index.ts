@@ -19,6 +19,11 @@ export {
   type SortDir,
 } from './DataTable';
 export { DatePicker, DateRangePicker } from './DatePicker';
+export {
+  ImagePicker,
+  type ImagePickerSource,
+  type PickedImage,
+} from './ImagePicker';
 export { AppErrorBoundary } from './ErrorBoundary';
 export { Input } from './Input';
 export { LoadingScreen } from './LoadingScreen';

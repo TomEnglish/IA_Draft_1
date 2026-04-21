@@ -1,5 +1,33 @@
 # Changelog — Invenio Design System
 
+<!-- v0.7.0 — remaining reviewer items + docs + adoption -->
+
+## [0.7.0] — 2026-04-21
+
+Closes the last four open items from the third-review backlog:
+
+### Added — `searchable` prop on `Select`
+`components/ui/Select.tsx` grew a `searchable` + `searchPlaceholder` prop. When on, renders a typeahead TextInput at the top of the option sheet; filters options by case-insensitive label match; shows an "No options match" empty state. Use for any 20+-row picker (vendor list, material type, user assignment). Default off.
+
+### Added — `ImagePicker`
+`components/ui/ImagePicker.tsx`. Wraps `expo-image-picker` with tokenized chrome. `source: 'camera' | 'library' | 'both'` (default `'both'` prompts an Action sheet). Handles permission requests; surfaces permission denial as a one-line inline error. Empty state is a tappable dropzone; populated state shows a 4:3 preview with Replace / Remove actions.
+
+### Changed — `app/(office)/materials.tsx` adopts `DataTable`
+The reviewer's "DataTable ships but nobody uses it" note is closed. Materials screen now consumes `DataTable` with:
+- 4 columns: Material (+ size/grade subtext), Status (tokenized badge via `tint()`), Qty (`current / total`), Location
+- Status filter chips via DataTable's `filters` prop (replaces the button row)
+- Infinite-scroll pagination preserved via outer `ScrollView onScroll` (DataTable skips its own pagination prop when not supplied)
+- `loading` → skeleton rows; `emptyState` → inline message with filter-aware copy
+- `onRowPress={openEdit}` replaces the bespoke card tap target
+
+### Added — `components/ui/README.md`
+First-adopter docs for the RN primitive library. One section per primitive with props, example snippet, and a11y notes. Includes the `useTokens` / `useThemedStyles` migration pattern and an "Adding a new primitive" checklist. Addresses the reviewer's P2 note about zero RN-side docs for new engineers.
+
+### Barrel export
+`components/ui/index.ts` re-exports `ImagePicker` + its types.
+
+---
+
 <!-- v0.6.0 — third-review cleanup + dark mode + pickers -->
 
 ## [0.6.0] — 2026-04-21
