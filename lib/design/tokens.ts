@@ -242,6 +242,33 @@ export const touchTarget = 44;
 // Aggregate — matches the shape used in the prototype pages
 // ─────────────────────────────────────────────────────────────
 
+// ─────────────────────────────────────────────────────────────
+// tint() — blend a token color with an alpha value, returning an
+// rgba() string. Use this instead of string-concatenating a hex
+// alpha suffix (e.g. `colors.success + '20'`) — the concat trick
+// doesn't type-check, skips our lint, and breaks dark-mode swaps.
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * Return a semi-transparent version of a hex color.
+ * @param hex  A #RRGGBB string. Short (#RGB) and #RRGGBBAA are accepted.
+ * @param alpha 0-1 opacity. Values outside [0,1] are clamped.
+ */
+export function tint(hex: string, alpha: number): string {
+  const a = Math.max(0, Math.min(1, alpha));
+  // Expand #RGB → #RRGGBB
+  let h = hex.replace(/^#/, '');
+  if (h.length === 3) {
+    h = h.split('').map((c) => c + c).join('');
+  }
+  // Strip optional alpha
+  if (h.length === 8) h = h.slice(0, 6);
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${a})`;
+}
+
 export const tokens = {
   color: colors,
   colorDark: colorsDark,

@@ -11,10 +11,99 @@ import { useAuthStore } from '@/stores/authStore';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Alert, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { colors } from '@/lib/design/tokens';
+import { Alert, RefreshControl, ScrollView, Text, View } from 'react-native';
+import { useTokens, useThemedStyles } from '@/lib/design/useTokens';
 
+/**
+ * Dashboard is the canonical reference for dark-mode theming in this repo.
+ * Pattern:
+ *   1. const c = useTokens();                 — colors for inline style prop / icon color
+ *   2. const styles = useThemedStyles((c) => ({ ... })) — the usual StyleSheet
+ *      but with `c` as the color reference inside.
+ *
+ * Any other screen migrating to dark mode should follow this exact shape —
+ * see lib/design/useTokens.ts for the full migration recipe.
+ */
 export default function DashboardScreen() {
+  const c = useTokens();
+  const styles = useThemedStyles((c) => ({
+    container: { flex: 1, backgroundColor: c.canvas },
+    content: { padding: 16, paddingBottom: 40 },
+    kpiGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 10,
+      marginBottom: 20,
+    },
+    kpiCard: {
+      width: '48%',
+      flexGrow: 1,
+      alignItems: 'center',
+      paddingVertical: 16,
+    },
+    kpiValue: { fontSize: 28, fontWeight: '700', marginTop: 6 },
+    kpiLabel: { fontSize: 13, color: c.textMuted, marginTop: 2 },
+    kpiSub: { fontSize: 11, color: c.textSubtle, marginTop: 2 },
+    sectionTitle: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: c.textPrimary,
+      marginBottom: 8,
+    },
+    barRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 6,
+    },
+    barLabel: { width: 100, fontSize: 13, color: c.textPrimary },
+    barTrack: {
+      flex: 1,
+      height: 16,
+      backgroundColor: c.raised,
+      borderRadius: 4,
+      marginHorizontal: 8,
+      overflow: 'hidden',
+    },
+    barFill: {
+      height: '100%',
+      backgroundColor: c.brandPrimary,
+      borderRadius: 4,
+    },
+    barValue: {
+      width: 30,
+      fontSize: 13,
+      color: c.textPrimary,
+      fontWeight: '600',
+      textAlign: 'right',
+    },
+    locationRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: 8,
+      borderBottomWidth: 1,
+      borderBottomColor: c.raised,
+    },
+    locationInfo: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+    locationName: { fontSize: 14, color: c.textPrimary, fontWeight: '500' },
+    holdBadge: {
+      fontSize: 9,
+      fontWeight: '700',
+      color: c.danger,
+      backgroundColor: c.dangerSoft,
+      paddingHorizontal: 5,
+      paddingVertical: 1,
+      borderRadius: 3,
+    },
+    locationCount: { fontSize: 13, color: c.textMuted },
+    emptyText: {
+      fontSize: 14,
+      color: c.textSubtle,
+      textAlign: 'center',
+      paddingVertical: 12,
+    },
+  }));
+
   const activeProject = useAuthStore((s) => s.activeProject);
   const [kpis, setKPIs] = useState<KPIData | null>(null);
   const [byType, setByType] = useState<InventoryByType[]>([]);
@@ -50,7 +139,7 @@ export default function DashboardScreen() {
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.content}
-      refreshControl={<RefreshControl refreshing={loading} onRefresh={load} />}
+      refreshControl={<RefreshControl refreshing={loading} onRefresh={load} tintColor={c.textMuted} />}
     >
       {/* KPI Cards */}
       <View style={styles.kpiGrid}>
@@ -59,26 +148,30 @@ export default function DashboardScreen() {
           label="In Yard"
           value={kpis?.totalInYard ?? 0}
           subvalue={`${kpis?.totalQuantityInYard ?? 0} total qty`}
-          color={colors.brandPrimary}
+          color={c.brandPrimary}
+          styles={styles}
         />
         <KPICard
           icon="list"
           label="All Materials"
           value={kpis?.totalMaterials ?? 0}
-          color={colors.textMuted}
+          color={c.textMuted}
+          styles={styles}
         />
         <KPICard
           icon="exclamation-triangle"
           label="Open Exceptions"
           value={kpis?.openExceptions ?? 0}
-          color={kpis?.openExceptions ? colors.danger : colors.success}
+          color={kpis?.openExceptions ? c.danger : c.success}
+          styles={styles}
         />
         <KPICard
           icon="clock-o"
           label="Aging > 30d"
           value={kpis?.agingOver30 ?? 0}
           subvalue={`${kpis?.agingOver90 ?? 0} over 90d`}
-          color={colors.warn}
+          color={c.warn}
+          styles={styles}
         />
       </View>
 
@@ -117,7 +210,7 @@ export default function DashboardScreen() {
                 <Text style={styles.locationName}>
                   {loc.zone} - R{loc.row}/Rk{loc.rack}
                 </Text>
-                {loc.is_hold_area && <Text style={styles.holdBadge}>HOLD</Text>}
+                {loc.is_hold_area ? <Text style={styles.holdBadge}>HOLD</Text> : null}
               </View>
               <Text style={styles.locationCount}>
                 {loc.items_stored} items ({loc.total_quantity} qty)
@@ -136,86 +229,21 @@ function KPICard({
   value,
   subvalue,
   color,
+  styles,
 }: {
   icon: any;
   label: string;
   value: number;
   subvalue?: string;
   color: string;
+  styles: ReturnType<typeof useThemedStyles>;
 }) {
   return (
     <Card style={styles.kpiCard}>
       <FontAwesome name={icon} size={20} color={color} />
       <Text style={[styles.kpiValue, { color }]}>{value}</Text>
       <Text style={styles.kpiLabel}>{label}</Text>
-      {subvalue && <Text style={styles.kpiSub}>{subvalue}</Text>}
+      {subvalue ? <Text style={styles.kpiSub}>{subvalue}</Text> : null}
     </Card>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.canvas },
-  content: { padding: 16, paddingBottom: 40 },
-  kpiGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-    marginBottom: 20,
-  },
-  kpiCard: {
-    width: '48%',
-    flexGrow: 1,
-    alignItems: 'center',
-    paddingVertical: 16,
-  },
-  kpiValue: { fontSize: 28, fontWeight: '700', marginTop: 6 },
-  kpiLabel: { fontSize: 13, color: colors.textMuted, marginTop: 2 },
-  kpiSub: { fontSize: 11, color: colors.textSubtle, marginTop: 2 },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: 8,
-  },
-  barRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 6,
-  },
-  barLabel: { width: 100, fontSize: 13, color: colors.textPrimary },
-  barTrack: {
-    flex: 1,
-    height: 16,
-    backgroundColor: colors.raised,
-    borderRadius: 4,
-    marginHorizontal: 8,
-    overflow: 'hidden',
-  },
-  barFill: {
-    height: '100%',
-    backgroundColor: colors.brandPrimary,
-    borderRadius: 4,
-  },
-  barValue: { width: 30, fontSize: 13, color: colors.textPrimary, fontWeight: '600', textAlign: 'right' },
-  locationRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.raised,
-  },
-  locationInfo: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  locationName: { fontSize: 14, color: colors.textPrimary, fontWeight: '500' },
-  holdBadge: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: colors.danger,
-    backgroundColor: colors.dangerSoft,
-    paddingHorizontal: 5,
-    paddingVertical: 1,
-    borderRadius: 3,
-  },
-  locationCount: { fontSize: 13, color: colors.textMuted },
-  emptyText: { fontSize: 14, color: colors.textSubtle, textAlign: 'center', paddingVertical: 12 },
-});

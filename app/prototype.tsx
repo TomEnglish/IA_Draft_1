@@ -226,7 +226,7 @@ function CardRow() {
       <View style={[styles.surface, { padding: tokens.space[6], flex: 1, minWidth: 260, gap: tokens.space[3] }]}>
         <Text style={styles.eyebrow}>Greenfield LNG</Text>
         <Text style={styles.h3}>Module MR-402 received</Text>
-        <Text style={styles.bodySmall}>Container #884201 · 12 items · QA passed</Text>
+        <Text style={styles.bodySmall}>Container #884201 · 12 items · QA passed</Text>{/* tokens-lint-ignore: data string */}
         <View style={{ flexDirection: 'row', gap: tokens.space[2] }}>
           <Tag tone="success" text="Delivered" />
           <Tag tone="info" text="RTS" />

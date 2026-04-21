@@ -12,9 +12,13 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
-# Pattern: quoted hex color literals in TS/TSX style props.
-# Matches: '#RGB', '#RRGGBB', '#RRGGBBAA' in single- or double-quoted strings.
-PATTERN="['\"]#[0-9a-fA-F]{3,8}\b"
+# Pattern: any 3/6/8-digit hex color literal.
+#
+# v0.3.0 matched only quoted strings. v0.6.0 matches every hex — including
+# inside backtick template literals (where CSS for printing + email hides)
+# — and relies on the `// tokens-lint-ignore` comment as the explicit opt-out
+# for non-design hex (data strings, PR numbers, etc.).
+PATTERN="#[0-9a-fA-F]{3,8}\b"
 
 # Candidate files
 MATCHES=$(grep -rEn --include='*.tsx' "$PATTERN" app components || true)

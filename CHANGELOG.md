@@ -1,5 +1,54 @@
 # Changelog — Invenio Design System
 
+<!-- v0.6.0 — third-review cleanup + dark mode + pickers -->
+
+## [0.6.0] — 2026-04-21
+
+Closes every item the senior-design-reviewer's third-pass audit flagged, plus the three new-scenario primitives they named as vertical gaps (MultiSelect, DatePicker, plus dark-mode wiring).
+
+### Fixed (P0)
+- **`components/ui/Modal.tsx`** — removed `accessibilityRole="alert"` on the dialog surface. `alert` is for interrupt-worthy assertive announcements; a Select option list is not an alert. Now uses `accessibilityViewIsModal` + `accessibilityLabel={title}`. This was a WCAG misuse that would have failed procurement a11y audits.
+
+### Changed — legacy modal migration
+All four `components/modals/*.tsx` files now consume `components/ui/Modal` instead of importing RN's `Modal` directly:
+- `GenerateQRModal.tsx` — was ~60 LOC with hand-rolled backdrop; now ~40 LOC
+- `EditMaterialModal.tsx` — same pattern
+- `QRDetailModal.tsx` — same pattern + actions moved into the Modal's actions slot
+- `AdminEditModal.tsx` — biggest refactor; enum/boolean pickers kept, dialog chrome replaced
+
+Any future improvement to Modal focus management / sizing / animation now applies to all five consumers (`ProjectSelector` + 4 legacy modals) at once.
+
+### Added — `useTokens()` + `useThemedStyles()` (dark mode wiring)
+- **`lib/design/useTokens.ts`** — hook that reads `useColorScheme()` and returns the light or dark token set. `useThemedStyles(factory)` wraps `StyleSheet.create` so style sheets rebuild on theme change.
+- **`app/(office)/dashboard.tsx`** — refactored to the `useThemedStyles` pattern as the canonical reference. Any other screen migrating to dark mode should follow this exact shape (documented at the top of `useTokens.ts`).
+
+### Added — `MultiSelect<T>` primitive
+`components/ui/MultiSelect.tsx`. Multi-value combobox; sheet stays open, checkbox rows, Apply / Cancel, optional Select all / Clear bulk actions. Draft state pattern — selections don't commit until Apply so Cancel reverts cleanly. Trigger shows up to `maxDisplay` selections inline, then collapses to "+N more".
+
+### Added — `DatePicker` + `DateRangePicker`
+`components/ui/DatePicker.tsx`. Wraps `@react-native-community/datetimepicker` (installed in this release) with tokenized chrome:
+- iOS: native spinner inside a Modal with explicit Cancel/Apply (iOS convention).
+- Android: native Material date dialog, commits on selection (Android convention).
+- Web: HTML5 `<input type="date">`.
+- Mode: `'date' | 'time' | 'datetime'`.
+- `DateRangePicker` composes two DatePickers with automatic min/max cross-binding and inline validation of `end >= start`.
+
+### Added — `tint(color, alpha)` helper
+`lib/design/tokens.ts` exports `tint(hex, alpha)` returning an `rgba()` string. Use this instead of string-concatenating an alpha suffix onto a hex (`colors.success + '20'`) — the concat pattern doesn't type-check, silently passes the token lint, and breaks dark-mode swaps. `components/screens/AdminScreen.tsx:477` migrated as the first consumer.
+
+### Changed — tokens lint widened
+`scripts/lint-tokens.sh` regex now matches hex anywhere, not just inside single/double quotes. This catches the backtick-template blind spot the reviewer named at `app/(office)/qr-codes.tsx:130` (CSS inside a print-HTML string). Legitimate non-design hex now has a `// tokens-lint-ignore: <reason>` trailing comment:
+- `app/prototype.tsx:229` — container number data string
+- `app/(office)/qr-codes.tsx:130` — CSS border color inside print HTML
+
+### Barrel export
+`components/ui/index.ts` re-exports `MultiSelect`, `DatePicker`, `DateRangePicker`.
+
+### Status
+The senior-design-reviewer's third audit (P0 + 3×P1 + new-scenario gaps) is now fully closed. Typecheck: clean. tokens:lint: clean (only ignored violations remain, with documented reasons).
+
+---
+
 <!-- v0.5.0 — DataTable primitive -->
 
 ## [0.5.0] — 2026-04-21

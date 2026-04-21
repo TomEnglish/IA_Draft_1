@@ -127,7 +127,7 @@ export default function QRCodesScreen() {
               .label {
                 width: 180px;
                 text-align: center;
-                border: 1px solid #e2e8f0;
+                border: 1px solid #e2e8f0; /* tokens-lint-ignore: print-HTML CSS */
                 padding: 10px;
                 page-break-inside: avoid;
               }

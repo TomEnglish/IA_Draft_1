@@ -59,7 +59,7 @@ export function Modal({
         <View
           style={[styles.dialog, { maxWidth }]}
           onStartShouldSetResponder={() => true}
-          accessibilityRole="alert"
+          accessibilityViewIsModal
           accessibilityLabel={accessibilityLabel ?? title}
         >
           {title ? <Text style={styles.title}>{title}</Text> : null}

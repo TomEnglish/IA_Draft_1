@@ -17,7 +17,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { colors } from '@/lib/design/tokens';
+import { colors, tint } from '@/lib/design/tokens';
 
 // ---------------------------------------------------------------------------
 // Table configurations
@@ -474,7 +474,7 @@ export function AdminScreen() {
           <View key={col.key} style={styles.cardRow}>
             <Text style={styles.cardLabel}>{col.label}</Text>
             {isEnum && value ? (
-              <View style={[styles.statusBadge, { backgroundColor: badgeColor(value) + '20' }]}>
+              <View style={[styles.statusBadge, { backgroundColor: tint(badgeColor(value), 0.12) }]}>
                 <Text style={[styles.statusText, { color: badgeColor(value) }]}>
                   {String(value).replaceAll('_', ' ').toUpperCase()}
                 </Text>

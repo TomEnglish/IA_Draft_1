@@ -18,10 +18,12 @@ export {
   type DataTablePagination,
   type SortDir,
 } from './DataTable';
+export { DatePicker, DateRangePicker } from './DatePicker';
 export { AppErrorBoundary } from './ErrorBoundary';
 export { Input } from './Input';
 export { LoadingScreen } from './LoadingScreen';
 export { Modal } from './Modal';
+export { MultiSelect } from './MultiSelect';
 export { OfflineIndicator } from './OfflineIndicator';
 export { ProjectSelector } from './ProjectSelector';
 export { Radio, RadioGroup } from './Radio';
