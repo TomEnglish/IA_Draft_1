@@ -60,6 +60,12 @@
         "projectId": "2628e94e-6c96-4cd3-b753-3f859707a23d"
       }
     },
-    "owner": "eenglish"
+    "owner": "eenglish",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/2628e94e-6c96-4cd3-b753-3f859707a23d"
+    }
   }
 }
