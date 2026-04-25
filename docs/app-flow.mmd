@@ -1,0 +1,81 @@
+flowchart TD
+    Start([App Launch]) --> AuthCheck{Session?}
+    AuthCheck -->|No| Login[Login Screen<br/>Email + Password]
+    AuthCheck -->|Yes| RoleCheck{User Role?}
+    Login --> RoleCheck
+
+    RoleCheck -->|Field Worker| FieldTabs
+    RoleCheck -->|Office / Admin| OfficeTabs
+
+    subgraph FieldTabs["Field Worker Tabs"]
+        FScan[Scan QR Code]
+        FInv[Inventory]
+        FAct[My Activity]
+    end
+
+    subgraph OfficeTabs["Office Staff Tabs"]
+        ODash[Dashboard KPIs]
+        OMat[Materials]
+        OExc[Exceptions]
+        OLoc[Locations]
+        OScan[Scan QR Code]
+        OQR[QR Code Mgmt]
+        OAct[All Activity]
+        OAdmin[Admin]
+    end
+
+    FScan --> ScanResult{QR Found?}
+    OScan --> ScanResult
+
+    ScanResult -->|Yes| MatDetail[Material Detail]
+    ScanResult -->|No| Receiving
+
+    subgraph Receiving["Receiving Wizard - 6 Steps"]
+        direction LR
+        R0[Step 0<br/>Material Info] --> R1[Step 1<br/>PO / Delivery]
+        R1 --> R2[Step 2<br/>Photos]
+        R2 --> R3[Step 3<br/>Inspection]
+        R3 --> R4[Step 4<br/>Decision]
+        R4 --> R5[Step 5<br/>Location]
+    end
+
+    R5 --> SubmitCheck{Online?}
+    SubmitCheck -->|Yes| DirectSubmit[Submit to Supabase]
+    SubmitCheck -->|No| QueueOffline[Add to Offline Queue]
+    QueueOffline --> AutoSync[Auto-Sync on Reconnect]
+
+    MatDetail --> Actions{Office User?}
+    Actions -->|No| ViewOnly[View Only]
+    Actions -->|Yes| ActionBtns
+
+    subgraph ActionBtns["Material Actions"]
+        Transfer[Transfer<br/>Move to new location]
+        Issue[Issue to Job<br/>Job # + Qty]
+        ShipOut[Ship Out<br/>Destination + Tracking]
+    end
+
+    Transfer --> OfflineCheck{Online?}
+    Issue --> OfflineCheck
+    ShipOut --> OfflineCheck
+    OfflineCheck -->|Yes| DirectAPI[API Call + Audit Log]
+    OfflineCheck -->|No| QueueOffline
+
+    FInv --> MatDetail
+    OMat --> MatDetail
+    OMat --> EditMat[Edit Material Modal]
+
+    OExc --> ExcDetail[Exception Detail]
+    ExcDetail --> ExcAction{Resolution}
+    ExcAction --> Hold[Hold - Move to Hold Area]
+    ExcAction --> Return[Return to Vendor]
+
+    OQR --> GenQR[Generate Batch 1-100]
+    OQR --> PrintQR[Print QR Codes]
+
+    ODash --> KPIs[In Yard / Total / Exceptions / Aging]
+    ODash --> TypeChart[Inventory by Type]
+    ODash --> YardView[Yard Overview]
+
+    DirectSubmit --> Success([Done])
+    DirectAPI --> Success
+    AutoSync --> Success

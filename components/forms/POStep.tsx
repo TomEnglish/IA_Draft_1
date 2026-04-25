@@ -29,7 +29,7 @@ export function POStep({ onNext, onBack }: Props) {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
       <Text style={styles.title}>PO / Delivery Info</Text>
 
       <Input label="Vendor" value={vendor} onChangeText={setVendor} placeholder="Vendor name" />

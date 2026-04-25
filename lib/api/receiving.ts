@@ -97,7 +97,7 @@ export async function submitReceivingRecord({
       has_exception: decision.has_exception,
       exception_type: decision.exception_type ?? null,
       exception_resolved: false,
-      location_id: location.location_id,
+      location_id: location.location_id || null,
       created_by: userId,
     })
     .select()
@@ -139,7 +139,7 @@ export async function submitReceivingRecord({
       current_quantity: material.qty,
       weight: material.weight ?? null,
       spec: material.spec ?? null,
-      location_id: location.location_id,
+      location_id: location.location_id || null,
       status: 'in_yard',
     });
   }
