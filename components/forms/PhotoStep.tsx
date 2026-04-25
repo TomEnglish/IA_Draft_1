@@ -52,7 +52,7 @@ export function PhotoStep({ onNext, onBack }: Props) {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
       <Text style={styles.title}>Photos</Text>
 
       <Text style={styles.label}>Photo Type</Text>

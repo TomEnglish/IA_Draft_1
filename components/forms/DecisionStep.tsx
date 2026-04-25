@@ -49,7 +49,7 @@ export function DecisionStep({ onNext, onSubmit, onBack, submitting }: Props) {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
       <Text style={styles.title}>Decision</Text>
 
       <Text style={styles.label}>Status</Text>

@@ -33,7 +33,7 @@ export function InspectionStep({ onNext, onBack }: Props) {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
       <Text style={styles.title}>Inspection</Text>
 
       <Text style={styles.label}>Condition</Text>

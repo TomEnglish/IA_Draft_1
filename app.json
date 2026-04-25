@@ -16,8 +16,10 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.qrassetscanner.app",
+      "appleTeamId": "3K94LXF39A",
       "infoPlist": {
-        "NSCameraUsageDescription": "This app uses the camera to scan QR codes on materials."
+        "NSCameraUsageDescription": "This app uses the camera to scan QR codes on materials.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -28,7 +30,11 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "permissions": ["CAMERA"]
+      "permissions": [
+        "CAMERA",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -46,6 +52,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "2628e94e-6c96-4cd3-b753-3f859707a23d"
+      }
+    },
+    "owner": "eenglish"
   }
 }
