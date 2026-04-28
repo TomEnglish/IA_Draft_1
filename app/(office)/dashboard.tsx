@@ -11,8 +11,15 @@ import { useAuthStore } from '@/stores/authStore';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Alert, RefreshControl, ScrollView, Text, View } from 'react-native';
+import { Alert, RefreshControl, ScrollView, Text, View, type TextStyle, type ViewStyle } from 'react-native';
 import { useTokens, useThemedStyles } from '@/lib/design/useTokens';
+
+type KPIStyles = {
+  kpiCard: ViewStyle;
+  kpiValue: TextStyle;
+  kpiLabel: TextStyle;
+  kpiSub: TextStyle;
+};
 
 /**
  * Dashboard is the canonical reference for dark-mode theming in this repo.
@@ -236,7 +243,7 @@ function KPICard({
   value: number;
   subvalue?: string;
   color: string;
-  styles: ReturnType<typeof useThemedStyles>;
+  styles: KPIStyles;
 }) {
   return (
     <Card style={styles.kpiCard}>
