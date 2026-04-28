@@ -40,3 +40,12 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Local Netlify folder
+.netlify
+
+# Local demo recordings (large)
+vids/
+
+# Supabase CLI cache
+supabase/.temp/

@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
           outlineColor: ring.color,
           outlineWidth: ring.width,
           outlineOffset: 0,
-        } as unknown as ViewStyle)
+        } as unknown as TextStyle)
       : {}),
   },
   inputError: {

@@ -11,7 +11,7 @@
 1. **Clone the repo**
    ```bash
    git clone <repo-url>
-   cd QR_Asset_Scanner
+   cd <repo-folder>
    ```
 
 2. **Install dependencies**
