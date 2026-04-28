@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { supabase } from '@/lib/supabase';
+import { getProjectClient } from '@/lib/supabaseProject';
 import { useAuthStore } from '@/stores/authStore';
 import type { Location } from '@/types/database';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -33,7 +33,7 @@ export default function LocationsScreen() {
 
   const load = async () => {
     setLoading(true);
-    const { data, error } = await supabase
+    const { data, error } = await getProjectClient()
       .from('locations')
       .select('*')
       .order('zone')
@@ -61,7 +61,7 @@ export default function LocationsScreen() {
     }
     setSaving(true);
     try {
-      const { error } = await supabase.from('locations').insert({
+      const { error } = await getProjectClient().from('locations').insert({
         zone,
         row,
         rack,
