@@ -34,18 +34,17 @@ app/                         — Expo Router screens (file-based routing)
     activity.tsx             — Recent actions log (receiving, transfers, issues)
   (office)/
     _layout.tsx              — Tab navigator for office staff
-    dashboard.tsx            — KPI cards and charts (Phase 5)
-    materials.tsx            — Material CRUD (Phase 5)
+    dashboard.tsx            — KPI cards and yard overview
+    materials.tsx            — Material inventory and detail navigation
     exceptions.tsx           — Exception queue with Open/All filter, expand to review + resolve
-    locations.tsx            — Zone/row/rack management (Phase 5)
+    locations.tsx            — Zone/row/rack management
     qr-codes.tsx             — Batch QR generation, printable labels (PDF), QR detail view
-    reports.tsx              — Aging, counts, CSV export (Phase 5)
+    reports.tsx              — Aging, counts, CSV export
 
 components/
   ui/                        — Reusable UI: Button, Card, Input, SignOutButton, OfflineIndicator, LoadingScreen, ErrorBoundary
   forms/                     — Wizard step components: MaterialStep, POStep, InspectionStep, PhotoStep, LocationStep, DecisionStep
   scanning/                  — QRScanner component (expo-camera barcode scanning + manual entry)
-  dashboard/                 — Chart and KPI components (Phase 5)
 
 lib/
   supabase.ts                — Supabase client initialization
@@ -82,7 +81,7 @@ supabase/
     003_materials_and_movements.sql — materials, movements, issues, shipments + RLS
     004_dashboard_views.sql  — Reporting views
     005_audit_log.sql        — Audit log table with indexes
-  functions/                 — Edge Functions (future)
+    006-010                  — RLS fixes, atomic quantity updates, multi-project support, and user policy hardening
 
 eas.json                     — EAS Build profiles (development, preview, production)
 ```
