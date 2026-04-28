@@ -55,7 +55,7 @@ npx eas-cli device:list
 After new devices are registered, rebuild so they're included in the provisioning profile:
 
 ```
-cd "/Users/eemm/CoWork/Invenio/Invenio Field"
+cd <repo-folder>
 npx eas-cli build --profile preview --platform ios
 ```
 

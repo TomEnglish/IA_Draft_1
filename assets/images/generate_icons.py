@@ -1,6 +1,7 @@
 """Generate Kindred Industrial logo icons for QR Asset Scanner."""
 
 import math
+from pathlib import Path
 from PIL import Image, ImageDraw
 
 GOLD = (176, 160, 122)  # #B0A07A
@@ -65,18 +66,18 @@ def generate_icon(size, hex_fraction, bg_color, mode, filename):
     print(f"Created {filename} ({size}x{size})")
 
 
-OUTPUT_DIR = "/Users/eemm/CoWork/QR_Asset_Scanner/assets/images/"
+OUTPUT_DIR = Path(__file__).resolve().parent
 
 # 1. icon.png — 1024x1024, white bg, hexagon ~70% of canvas
-generate_icon(1024, 0.70, WHITE, "RGB", OUTPUT_DIR + "icon.png")
+generate_icon(1024, 0.70, WHITE, "RGB", OUTPUT_DIR / "icon.png")
 
 # 2. adaptive-icon.png — same as icon
-generate_icon(1024, 0.70, WHITE, "RGB", OUTPUT_DIR + "adaptive-icon.png")
+generate_icon(1024, 0.70, WHITE, "RGB", OUTPUT_DIR / "adaptive-icon.png")
 
 # 3. splash-icon.png — 200x200, transparent bg, hexagon fills most of canvas (~85%)
-generate_icon(200, 0.85, TRANSPARENT, "RGBA", OUTPUT_DIR + "splash-icon.png")
+generate_icon(200, 0.85, TRANSPARENT, "RGBA", OUTPUT_DIR / "splash-icon.png")
 
 # 4. favicon.png — 48x48, transparent bg, hexagon fills most of canvas (~85%)
-generate_icon(48, 0.85, TRANSPARENT, "RGBA", OUTPUT_DIR + "favicon.png")
+generate_icon(48, 0.85, TRANSPARENT, "RGBA", OUTPUT_DIR / "favicon.png")
 
 print("\nAll icons generated successfully.")
